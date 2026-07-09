@@ -1,0 +1,69 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { cn } from '@/lib/utils'
+import { Star, LayoutDashboard, Dumbbell, Calendar, Image, Phone, LogOut, Users } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+
+const navItems = [
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/servicios', label: 'Servicios', icon: Dumbbell },
+  { href: '/admin/profesores', label: 'Profesores', icon: Users },
+  { href: '/admin/horarios', label: 'Horarios', icon: Calendar },
+  { href: '/admin/galeria', label: 'Galería', icon: Image },
+  { href: '/admin/contacto', label: 'Contacto', icon: Phone },
+]
+
+export function AdminSidebar() {
+  const pathname = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    toast.success('Sesión cerrada')
+    router.push('/admin/login')
+    router.refresh()
+  }
+
+  return (
+    <aside className="flex h-full flex-col border-r border-border/60 bg-card w-60 shrink-0">
+      <div className="flex items-center gap-2 px-6 py-5 border-b border-border/60">
+        <Star className="h-5 w-5 fill-[var(--gold)] text-[var(--gold)]" />
+        <span className="font-black text-[var(--gold)]">Academia</span>
+        <span className="font-black">JM</span>
+      </div>
+
+      <nav className="flex-1 px-3 py-4 space-y-1">
+        {navItems.map((item) => {
+          const active = pathname === item.href
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                active
+                  ? 'bg-[var(--gold)]/10 text-[var(--gold)]'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      <div className="px-3 py-4 border-t border-border/60">
+        <Button variant="ghost" className="w-full justify-start text-muted-foreground" onClick={handleLogout}>
+          <LogOut className="mr-3 h-4 w-4" />
+          Cerrar sesión
+        </Button>
+      </div>
+    </aside>
+  )
+}
