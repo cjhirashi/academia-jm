@@ -28,28 +28,35 @@ const beneficios = [
 
 export function BeneficiosSection() {
   return (
-    <section className="py-24 px-4 bg-card">
+    <section className="py-20 px-4 bg-[#141218]">
       <div className="mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <p className="text-sm font-semibold uppercase tracking-widest text-[var(--gold)] mb-3">Por qué elegirnos</p>
-          <h2 className="text-4xl md:text-5xl font-black mb-4">Tu mejor decisión</h2>
+        {/* M3 section header */}
+        <div className="text-center mb-12">
+          <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Por qué elegirnos</p>
+          <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9]">Tu mejor decisión</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {beneficios.map((b, i) => (
             <motion.div
               key={b.titulo}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="text-center p-6 rounded-2xl border border-border/60 hover:border-[var(--gold)]/40 transition-colors"
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              /* M3 Outlined Card */
+              className="p-6 rounded-[16px] border border-[#49454F] bg-transparent hover:bg-[#211F26]/60 transition-colors"
             >
-              <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[var(--gold)]/10 mb-4">
-                <b.icon className="h-7 w-7 text-[var(--gold)]" />
+              {/* M3 Icon in primary container */}
+              <div className="w-12 h-12 rounded-full bg-[var(--gold)]/12 flex items-center justify-center mb-4">
+                <b.icon className="h-5 w-5 text-[var(--gold)]" />
               </div>
-              <h3 className="font-bold text-base mb-2">{b.titulo}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+              <h3 className="text-[16px] font-medium leading-[24px] tracking-[0.15px] text-[#E6E0E9] mb-2">
+                {b.titulo}
+              </h3>
+              <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0]">
+                {b.desc}
+              </p>
             </motion.div>
           ))}
         </div>

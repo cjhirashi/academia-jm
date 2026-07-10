@@ -6,11 +6,7 @@ async function getServicios(): Promise<Servicio[]> {
   if (!isSupabaseConfigured()) return []
   try {
     const supabase = await createClient()
-    const { data, error } = await supabase
-      .from('servicios')
-      .select('*')
-      .eq('activo', true)
-      .order('orden')
+    const { data, error } = await supabase.from('servicios').select('*').eq('activo', true).order('orden')
     if (error) return []
     return data ?? []
   } catch {
@@ -22,30 +18,24 @@ export async function ServiciosSection() {
   const servicios = await getServicios()
 
   return (
-    <section id="servicios" className="section-geo py-28 px-4 bg-[#0d0d0d]">
+    <section id="servicios" className="py-20 px-4 bg-[#0F0D13]">
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--gold)] mb-4">Nuestras Clases</p>
-          <div className="flex items-end justify-between flex-wrap gap-4">
-            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
-              Lo que<br />ofrecemos
-            </h2>
-            <p className="text-sm text-white/40 max-w-xs leading-relaxed">
-              Instructores certificados para todos los niveles. Elige la disciplina que más te apasione.
-            </p>
-          </div>
-          <div className="mt-6 h-px bg-gradient-to-r from-[var(--gold)]/60 via-[var(--gold)]/20 to-transparent" />
+        <div className="mb-12">
+          <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Nuestras Clases</p>
+          <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9] mb-1">Lo que ofrecemos</h2>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0] max-w-md">
+            Instructores certificados para todos los niveles. Elige la disciplina que más te apasione.
+          </p>
         </div>
 
         {servicios.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {servicios.map((s, i) => (
               <ServicioCard key={s.id} servicio={s} index={i} />
             ))}
           </div>
         ) : (
-          <p className="text-white/30 text-sm">Próximamente...</p>
+          <p className="text-[#938F99] text-[14px] py-8">Próximamente...</p>
         )}
       </div>
     </section>

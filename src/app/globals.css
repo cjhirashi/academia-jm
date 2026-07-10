@@ -40,96 +40,113 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* M3 shape scale */
+  --radius-xs:  4px;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+  --radius: 16px;
 }
 
 :root {
-  /* Academia JM — tema claro */
-  --background: oklch(0.97 0 0);
-  --foreground: oklch(0.1 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.1 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.1 0 0);
-  /* Rosa 80s como primary */
-  --primary: oklch(0.55 0.26 350);
-  --primary-foreground: oklch(0.98 0 0);
-  /* Azul eléctrico como secondary */
-  --secondary: oklch(0.55 0.18 212);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.94 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.94 0.05 350);
-  --accent-foreground: oklch(0.2 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0 0);
-  --input: oklch(0.88 0 0);
-  --ring: oklch(0.55 0.26 350);
-  --chart-1: oklch(0.55 0.26 350);
-  --chart-2: oklch(0.55 0.18 212);
-  --chart-3: oklch(0.6 0.2 300);
-  --chart-4: oklch(0.6 0.18 160);
-  --chart-5: oklch(0.5 0.18 30);
-  --radius: 0.75rem;
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: oklch(0.1 0 0);
-  --sidebar-primary: oklch(0.55 0.26 350);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.94 0 0);
-  --sidebar-accent-foreground: oklch(0.2 0 0);
-  --sidebar-border: oklch(0.88 0 0);
-  --sidebar-ring: oklch(0.55 0.26 350);
-  /* Colores 80s Academia JM */
+  /* M3 light surface scale */
+  --background: #FFFBFF;
+  --foreground: #1C1B1F;
+  --card: #FFFFFF;
+  --card-foreground: #1C1B1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1B1F;
+  --primary: #6750A4;
+  --primary-foreground: #FFFFFF;
+  --secondary: #625B71;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F4EFF4;
+  --muted-foreground: #49454F;
+  --accent: #F4EFF4;
+  --accent-foreground: #1C1B1F;
+  --destructive: #B3261E;
+  --border: #CAC4D0;
+  --input: #CAC4D0;
+  --ring: #6750A4;
+  --chart-1: #E91E8C;
+  --chart-2: #00BFFF;
+  --chart-3: #6750A4;
+  --chart-4: #625B71;
+  --chart-5: #7D5260;
+  --radius: 16px;
+  --sidebar: #F4EFF4;
+  --sidebar-foreground: #1C1B1F;
+  --sidebar-primary: #E91E8C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EAE7EC;
+  --sidebar-accent-foreground: #1C1B1F;
+  --sidebar-border: #CAC4D0;
+  --sidebar-ring: #E91E8C;
+  /* Academia JM brand */
   --gold: #C2185B;
   --gold-light: #E91E8C;
   --blue-jm: #0288D1;
+  /* M3 surface containers */
+  --surface-dim: #DED8E1;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F7F2FA;
+  --surface-container: #F3EDF7;
+  --surface-container-high: #ECE6F0;
+  --surface-container-highest: #E6E0E9;
+  --on-surface-variant: #49454F;
+  --outline: #79747E;
+  --outline-variant: #CAC4D0;
 }
 
 .dark {
-  /* Academia JM — tema oscuro cinematográfico 80s */
-  --background: oklch(0.07 0 0);
-  --foreground: oklch(0.96 0 0);
-  --card: oklch(0.11 0 0);
-  --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.11 0 0);
-  --popover-foreground: oklch(0.96 0 0);
-  /* Rosa neón como primary */
-  --primary: oklch(0.65 0.28 350);
-  --primary-foreground: oklch(0.98 0 0);
-  /* Azul eléctrico como secondary */
-  --secondary: oklch(0.7 0.18 212);
-  --secondary-foreground: oklch(0.05 0 0);
-  --muted: oklch(0.16 0 0);
-  --muted-foreground: oklch(0.58 0 0);
-  --accent: oklch(0.2 0.06 350);
-  --accent-foreground: oklch(0.96 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.65 0.28 350);
-  --chart-1: oklch(0.65 0.28 350);
-  --chart-2: oklch(0.7 0.18 212);
-  --chart-3: oklch(0.6 0.2 300);
-  --chart-4: oklch(0.65 0.18 160);
-  --chart-5: oklch(0.6 0.18 30);
-  --sidebar: oklch(0.10 0 0);
-  --sidebar-foreground: oklch(0.96 0 0);
-  --sidebar-primary: oklch(0.65 0.28 350);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.16 0 0);
-  --sidebar-accent-foreground: oklch(0.96 0 0);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.65 0.28 350);
-  /* Colores 80s Academia JM */
+  /* M3 dark surface scale — signature purple-tinted dark */
+  --background: #0F0D13;
+  --foreground: #E6E0E9;
+  --card: #211F26;
+  --card-foreground: #E6E0E9;
+  --popover: #211F26;
+  --popover-foreground: #E6E0E9;
+  --primary: #E91E8C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #00BFFF;
+  --secondary-foreground: #003354;
+  --muted: #1D1B20;
+  --muted-foreground: #CAC4D0;
+  --accent: #2B2930;
+  --accent-foreground: #E6E0E9;
+  --destructive: #F2B8B5;
+  --border: #49454F;
+  --input: #49454F;
+  --ring: #E91E8C;
+  --chart-1: #E91E8C;
+  --chart-2: #00BFFF;
+  --chart-3: #D0BCFF;
+  --chart-4: #CCC2DC;
+  --chart-5: #EFB8C8;
+  --sidebar: #1D1B20;
+  --sidebar-foreground: #E6E0E9;
+  --sidebar-primary: #E91E8C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #2B2930;
+  --sidebar-accent-foreground: #E6E0E9;
+  --sidebar-border: #49454F;
+  --sidebar-ring: #E91E8C;
+  /* Academia JM brand */
   --gold: #E91E8C;
   --gold-light: #FF61C0;
   --blue-jm: #00BFFF;
+  /* M3 dark surface containers */
+  --surface-dim: #141218;
+  --surface-container-lowest: #0F0D13;
+  --surface-container-low: #1D1B20;
+  --surface-container: #211F26;
+  --surface-container-high: #2B2930;
+  --surface-container-highest: #36343B;
+  --on-surface-variant: #CAC4D0;
+  --outline: #938F99;
+  --outline-variant: #49454F;
 }
 
 @layer base {
@@ -144,35 +161,21 @@
   }
 }
 
-/* Geometric diagonal section background */
-.section-geo {
+/* M3 State layer */
+.m3-state-layer {
   position: relative;
   overflow: hidden;
 }
-.section-geo::before,
-.section-geo::after {
+.m3-state-layer::after {
   content: '';
   position: absolute;
-  background: oklch(0.12 0 0);
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 200ms;
   pointer-events: none;
+  border-radius: inherit;
 }
-.section-geo::before {
-  width: 70%;
-  height: 200%;
-  top: -50%;
-  left: -15%;
-  transform: rotate(-12deg);
-  z-index: 0;
-}
-.section-geo::after {
-  width: 50%;
-  height: 180%;
-  bottom: -40%;
-  right: -10%;
-  transform: rotate(-12deg);
-  z-index: 0;
-}
-.section-geo > * {
-  position: relative;
-  z-index: 1;
-}
+.m3-state-layer:hover::after { opacity: 0.08; }
+.m3-state-layer:focus-visible::after { opacity: 0.12; }
+.m3-state-layer:active::after { opacity: 0.12; }

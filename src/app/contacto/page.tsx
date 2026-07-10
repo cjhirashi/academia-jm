@@ -20,11 +20,7 @@ async function getContacto(): Promise<Contacto | null> {
 export default async function ContactoPage() {
   const contacto = await getContacto()
   return (
-    <div className="pt-8">
-      <div className="text-center pt-12 pb-0 px-4">
-        <p className="text-sm font-semibold uppercase tracking-widest text-[var(--gold)] mb-3">Contacto</p>
-        <h1 className="text-5xl font-black mb-4">Hablemos</h1>
-      </div>
+    <div className="min-h-screen bg-[#0F0D13] pt-24">
       <ContactoSection contacto={contacto ?? undefined} />
     </div>
   )

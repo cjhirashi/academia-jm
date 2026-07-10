@@ -8,9 +8,7 @@ import { GaleriaSection } from '@/components/GaleriaSection'
 import { ContactoSection } from '@/components/ContactoSection'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import type { GaleriaItem, Contacto } from '@/lib/types'
 
 async function getData() {
@@ -39,19 +37,19 @@ export default async function HomePage() {
       <ServiciosSection />
       <BeneficiosSection />
 
-      {/* Preview horarios */}
-      <section className="section-geo py-28 px-4 bg-[#0d0d0d]">
+      {/* Horarios preview */}
+      <section className="py-20 px-4 bg-[#141218]">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--gold)] mb-4">Horarios</p>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Encuentra tu clase</h2>
-            <div className="h-px bg-gradient-to-r from-[var(--gold)]/60 via-[var(--gold)]/20 to-transparent" />
+          <div className="mb-10">
+            <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Horarios</p>
+            <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9] mb-1">Encuentra tu clase</h2>
+            <p className="text-[14px] leading-[20px] text-[#CAC4D0]">Consulta los próximos horarios disponibles.</p>
           </div>
           <HorariosTable preview />
-          <div className="mt-10">
+          <div className="mt-8">
             <Link
               href="/horarios"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 text-white/70 font-medium px-8 py-3 text-sm tracking-wide hover:bg-white/5 hover:border-white/40 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-[#938F99] text-[#CAC4D0] font-medium px-6 py-2.5 text-[14px] tracking-[0.1px] hover:bg-white/8 transition-colors"
             >
               Ver horario completo <ArrowRight className="h-4 w-4" />
             </Link>

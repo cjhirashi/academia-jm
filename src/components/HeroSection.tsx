@@ -8,109 +8,95 @@ const clases = ['Salsa', 'Cumbia', 'Zumba', 'Jumping', 'Yoga']
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]">
-      {/* Fondo */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f050d] to-[#0a0a0a]" />
-
-      {/* Glows 80s: rosa + azul */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-fuchsia-900/25 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-blue-900/20 blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-pink-900/10 blur-[80px] pointer-events-none" />
-
-      {/* Líneas decorativas */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" style={{ left: '20%' }} />
-        <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" style={{ left: '80%' }} />
-        <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" style={{ top: '30%' }} />
-        <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" style={{ top: '70%' }} />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0F0D13]">
+      {/* M3 tonal surface glow — primary tint very subtle */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#E91E8C]/6 blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-[#00BFFF]/5 blur-[100px]" />
       </div>
 
-      {/* Glassmorphism center card */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="w-full max-w-2xl bg-white/5 backdrop-blur-sm border border-white/10 px-10 py-14 md:px-16 md:py-20"
+      <div className="relative z-10 w-full max-w-2xl mx-auto px-4 flex flex-col items-center text-center">
+        {/* M3 Display typography */}
+        <motion.p
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-[12px] font-medium tracking-[0.5px] uppercase text-[#CAC4D0] mb-6"
         >
-          {/* Etiqueta */}
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-xs font-semibold tracking-[0.3em] uppercase text-white/50 mb-6"
-          >
-            Escuela de Baile y Bienestar
-          </motion.p>
+          Escuela de Baile y Bienestar · Cuajimalpa, CDMX
+        </motion.p>
 
-          {/* Título */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.6 }}
-          >
-            <span className="font-[family-name:var(--font-script)] text-5xl md:text-6xl text-white/30 block mb-2">
-              Academia
-            </span>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight text-white leading-none">
-              JM
-            </h1>
-          </motion.div>
-
-          {/* Separador rosa→azul */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="h-px w-16 bg-gradient-to-r from-[var(--gold)] to-[var(--blue-jm)] mx-auto my-8 origin-left"
-          />
-
-          {/* Tagline */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
-            className="text-sm md:text-base text-white/50 tracking-[0.2em] uppercase mb-10"
-          >
-            Aprende · Diviértete · Olvida tu estrés
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              href="/horarios"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--gold)] text-white font-bold px-8 py-3 text-sm tracking-wide hover:brightness-110 transition-all"
-            >
-              Ver Horarios <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href="https://wa.me/5553465764"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--blue-jm)]/40 text-[var(--blue-jm)] font-medium px-8 py-3 text-sm tracking-wide hover:bg-[var(--blue-jm)]/10 hover:border-[var(--blue-jm)] transition-colors"
-            >
-              <MessageCircle className="h-4 w-4" /> WhatsApp
-            </a>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.6 }}
+          className="mb-6"
+        >
+          <span className="font-[family-name:var(--font-script)] text-4xl md:text-5xl text-[#E6E0E9]/50 block mb-1">
+            Academia
+          </span>
+          <h1 className="text-[72px] md:text-[96px] font-black tracking-tight text-[#E6E0E9] leading-none">
+            JM
+          </h1>
         </motion.div>
 
-        {/* Clases chips */}
+        {/* M3 Divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="h-px w-24 bg-gradient-to-r from-[var(--gold)] to-[var(--blue-jm)] mb-6 origin-left"
+        />
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="text-[16px] leading-[24px] tracking-[0.5px] text-[#CAC4D0] mb-10 max-w-sm"
+        >
+          Aprende · Diviértete · Olvida tu estrés
+        </motion.p>
+
+        {/* M3 Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65, duration: 0.5 }}
+          className="flex flex-col sm:flex-row gap-3 justify-center mb-10"
+        >
+          {/* M3 Filled button */}
+          <Link
+            href="/horarios"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--gold)] text-white font-medium px-6 py-2.5 text-[14px] tracking-[0.1px] hover:brightness-110 active:brightness-90 transition-all shadow-md"
+          >
+            Ver Horarios <ArrowRight className="h-4 w-4" />
+          </Link>
+          {/* M3 Outlined button */}
+          <a
+            href="https://wa.me/5553465764"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#938F99] text-[var(--blue-jm)] font-medium px-6 py-2.5 text-[14px] tracking-[0.1px] hover:bg-[var(--blue-jm)]/8 transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" /> WhatsApp
+          </a>
+        </motion.div>
+
+        {/* M3 Suggestion chips */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.1, duration: 0.6 }}
-          className="mt-8 flex flex-wrap gap-2 justify-center"
+          transition={{ delay: 0.85, duration: 0.5 }}
+          className="flex flex-wrap gap-2 justify-center"
         >
           {clases.map((c, i) => (
             <span
               key={c}
-              className="text-xs font-medium tracking-widest uppercase text-white/30 border border-white/10 px-4 py-2"
-              style={{ borderColor: i % 2 === 0 ? 'rgb(233 30 140 / 0.2)' : 'rgb(0 191 255 / 0.2)' }}
+              className="inline-flex items-center h-8 px-4 rounded-full border text-[12px] font-medium tracking-[0.5px] text-[#CAC4D0]"
+              style={{
+                borderColor: i % 2 === 0 ? 'rgba(233,30,140,0.4)' : 'rgba(0,191,255,0.4)',
+                backgroundColor: i % 2 === 0 ? 'rgba(233,30,140,0.08)' : 'rgba(0,191,255,0.08)',
+              }}
             >
               {c}
             </span>
@@ -122,14 +108,14 @@ export function HeroSection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ delay: 1.2, duration: 0.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] tracking-[0.3em] uppercase text-white/25">Scroll</span>
+        <span className="text-[11px] font-medium tracking-[0.5px] uppercase text-[#938F99]">Scroll</span>
         <motion.div
-          animate={{ y: [0, 8, 0] }}
+          animate={{ y: [0, 6, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-px h-8 bg-gradient-to-b from-[var(--gold)] to-transparent"
+          className="w-px h-6 bg-gradient-to-b from-[var(--gold)] to-transparent"
         />
       </motion.div>
     </section>
