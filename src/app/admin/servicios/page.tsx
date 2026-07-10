@@ -14,6 +14,7 @@ import { Plus, Pencil, Trash2, Loader2, Settings, Upload, X, UserPlus } from 'lu
 import { toast } from 'sonner'
 import Image from 'next/image'
 import type { Servicio, Profesor, ServicioGaleria } from '@/lib/types'
+import { crearServicio, actualizarServicio, eliminarServicio, toggleActivoServicio, asignarProfesor, desasignarProfesor, eliminarGaleriaItem } from './actions'
 
 const ICONOS = ['Music', 'Waves', 'Flame', 'Zap', 'Heart', 'Dumbbell']
 
@@ -75,12 +76,12 @@ export default function ServiciosAdmin() {
     setSaving(true)
     const payload = { nombre: form.nombre, descripcion: form.descripcion || null, icono: form.icono, imagen_url: form.imagen_url || null, orden: form.orden, activo: form.activo }
     if (editId) {
-      const { error } = await supabase.from('servicios').update(payload).eq('id', editId)
-      if (error) { toast.error('Error al actualizar'); setSaving(false); return }
+      const { error } = await actualizarServicio(editId, payload)
+      if (error) { toast.error(`Error al actualizar: ${error}`); setSaving(false); return }
       toast.success('Servicio actualizado')
     } else {
-      const { error } = await supabase.from('servicios').insert(payload)
-      if (error) { toast.error(`Error al crear: ${error.message}`); setSaving(false); return }
+      const { error } = await crearServicio(payload)
+      if (error) { toast.error(`Error al crear: ${error}`); setSaving(false); return }
       toast.success('Servicio creado')
     }
     setOpen(false); setSaving(false); fetchServicios()
@@ -88,13 +89,13 @@ export default function ServiciosAdmin() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('¿Eliminar este servicio?')) return
-    const { error } = await supabase.from('servicios').delete().eq('id', id)
-    if (error) { toast.error('Error al eliminar'); return }
+    const { error } = await eliminarServicio(id)
+    if (error) { toast.error(`Error al eliminar: ${error}`); return }
     toast.success('Servicio eliminado'); fetchServicios()
   }
 
   const toggleActivo = async (s: Servicio) => {
-    await supabase.from('servicios').update({ activo: !s.activo }).eq('id', s.id)
+    await toggleActivoServicio(s.id, !s.activo)
     fetchServicios()
   }
 
@@ -104,12 +105,10 @@ export default function ServiciosAdmin() {
   const toggleProfesor = async (prof: Profesor) => {
     if (!gestionServicio) return
     if (isAssigned(prof.id)) {
-      await supabase.from('servicio_profesores').delete()
-        .eq('servicio_id', gestionServicio.id)
-        .eq('profesor_id', prof.id)
+      await desasignarProfesor(gestionServicio.id, prof.id)
       setAssignedProfesores((prev) => prev.filter((p) => p.id !== prof.id))
     } else {
-      await supabase.from('servicio_profesores').insert({ servicio_id: gestionServicio.id, profesor_id: prof.id })
+      await asignarProfesor(gestionServicio.id, prof.id)
       setAssignedProfesores((prev) => [...prev, prof])
     }
   }
@@ -137,7 +136,7 @@ export default function ServiciosAdmin() {
   }
 
   const handleDeleteGaleriaItem = async (item: ServicioGaleria) => {
-    await supabase.from('servicio_galeria').delete().eq('id', item.id)
+    await eliminarGaleriaItem(item.id)
     setServicioGaleria((prev) => prev.filter((g) => g.id !== item.id))
     toast.success('Foto eliminada')
   }
