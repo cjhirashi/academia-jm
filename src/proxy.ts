@@ -1,30 +1,25 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const isSupabaseConfigured = () =>
-  process.env.NEXT_PUBLIC_SUPABASE_URL?.startsWith('https://') &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.length > 10
-
 export async function proxy(request: NextRequest) {
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginRoute = request.nextUrl.pathname === '/admin/login'
+  const pathname = request.nextUrl.pathname
 
-  // Si Supabase no está configurado, permitir acceso libre a login y bloquear el resto
-  if (!isSupabaseConfigured()) {
+  // La página de login nunca se redirige desde aquí
+  if (pathname === '/admin/login') {
     return NextResponse.next({ request })
   }
 
-  let supabaseResponse = NextResponse.next({ request })
+  // Si no hay variables de Supabase, paso libre
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return NextResponse.next({ request })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  try {
+    let supabaseResponse = NextResponse.next({ request })
+    const supabase = createServerClient(url, key, {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) => {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
@@ -32,26 +27,19 @@ export async function proxy(request: NextRequest) {
           )
         },
       },
+    })
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (pathname.startsWith('/admin') && !user) {
+      return NextResponse.redirect(new URL('/admin/login', request.url))
     }
-  )
 
-  let user = null
-  try {
-    const { data } = await supabase.auth.getUser()
-    user = data.user
+    return supabaseResponse
   } catch {
-    // Si falla la autenticación, tratar como no autenticado
+    // Cualquier error = paso libre sin redirect
+    return NextResponse.next({ request })
   }
-
-  if (isAdminRoute && !isLoginRoute && !user) {
-    return NextResponse.redirect(new URL('/admin/login', request.url))
-  }
-
-  if (isLoginRoute && user) {
-    return NextResponse.redirect(new URL('/admin', request.url))
-  }
-
-  return supabaseResponse
 }
 
 export const config = {
