@@ -4,27 +4,18 @@ import type { Horario, Servicio } from '@/lib/types'
 
 const HORAS = ['07:00', '08:00', '09:00', '10:00', '11:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00']
 
-const HORARIOS_DEFAULT: (Horario & { servicio: Servicio })[] = [
-  { id: '1', servicio_id: 'salsa', dia_semana: 1, hora_inicio: '09:00:00', hora_fin: '10:00:00', salon: 'Salón A', servicio: { id: 'salsa', nombre: 'Salsa', descripcion: null, icono: 'Music', imagen_url: null, orden: 1, activo: true, created_at: '' } },
-  { id: '2', servicio_id: 'zumba', dia_semana: 2, hora_inicio: '18:00:00', hora_fin: '19:00:00', salon: 'Salón B', servicio: { id: 'zumba', nombre: 'Zumba', descripcion: null, icono: 'Flame', imagen_url: null, orden: 3, activo: true, created_at: '' } },
-  { id: '3', servicio_id: 'yoga', dia_semana: 3, hora_inicio: '07:00:00', hora_fin: '08:00:00', salon: 'Salón A', servicio: { id: 'yoga', nombre: 'Yoga', descripcion: null, icono: 'Heart', imagen_url: null, orden: 5, activo: true, created_at: '' } },
-  { id: '4', servicio_id: 'salsa', dia_semana: 4, hora_inicio: '19:00:00', hora_fin: '20:00:00', salon: 'Salón A', servicio: { id: 'salsa', nombre: 'Salsa', descripcion: null, icono: 'Music', imagen_url: null, orden: 1, activo: true, created_at: '' } },
-  { id: '5', servicio_id: 'jumping', dia_semana: 5, hora_inicio: '10:00:00', hora_fin: '11:00:00', salon: 'Salón C', servicio: { id: 'jumping', nombre: 'Jumping', descripcion: null, icono: 'Zap', imagen_url: null, orden: 4, activo: true, created_at: '' } },
-  { id: '6', servicio_id: 'cumbia', dia_semana: 6, hora_inicio: '11:00:00', hora_fin: '12:00:00', salon: 'Salón A', servicio: { id: 'cumbia', nombre: 'Cumbia', descripcion: null, icono: 'Waves', imagen_url: null, orden: 2, activo: true, created_at: '' } },
-]
-
 async function getHorarios() {
-  if (!isSupabaseConfigured()) return HORARIOS_DEFAULT
+  if (!isSupabaseConfigured()) return []
   try {
     const supabase = await createClient()
     const { data, error } = await supabase
       .from('horarios')
       .select('*, servicio:servicios(*)')
       .order('hora_inicio')
-    if (error || !data?.length) return HORARIOS_DEFAULT
-    return data as (Horario & { servicio: Servicio })[]
+    if (error) return []
+    return (data ?? []) as (Horario & { servicio: Servicio })[]
   } catch {
-    return HORARIOS_DEFAULT
+    return []
   }
 }
 
@@ -34,6 +25,10 @@ function horaLabel(time: string) {
 
 export async function HorariosTable({ preview = false }: { preview?: boolean }) {
   const horarios = await getHorarios()
+
+  if (horarios.length === 0) {
+    return <p className="text-white/30 text-sm py-4">Próximamente...</p>
+  }
 
   const mapa: Record<string, Record<number, (Horario & { servicio: Servicio })[]>> = {}
   horarios.forEach((h) => {

@@ -4,7 +4,6 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Music, Waves, Flame, Zap, Heart, Dumbbell, ArrowRight } from 'lucide-react'
-import { SERVICIOS_DEFAULT } from '@/lib/types'
 import type { Servicio, Profesor } from '@/lib/types'
 
 export const metadata = { title: 'Servicios — Academia JM' }
@@ -25,7 +24,7 @@ const iconMap: Record<string, React.ReactNode> = {
 }
 
 async function getServicios(): Promise<Servicio[]> {
-  if (!isSupabaseConfigured()) return SERVICIOS_DEFAULT as Servicio[]
+  if (!isSupabaseConfigured()) return []
   try {
     const supabase = await createClient()
     const { data } = await supabase
@@ -33,9 +32,9 @@ async function getServicios(): Promise<Servicio[]> {
       .select('*')
       .eq('activo', true)
       .order('orden')
-    return data?.length ? data : (SERVICIOS_DEFAULT as Servicio[])
+    return data ?? []
   } catch {
-    return SERVICIOS_DEFAULT as Servicio[]
+    return []
   }
 }
 
@@ -79,11 +78,15 @@ export default async function ServiciosPage() {
       {/* Grid de servicios */}
       <section className="py-20 px-4 bg-background">
         <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {servicios.map((servicio, i) => (
-              <ServicioCardLink key={servicio.id ?? servicio.nombre} servicio={servicio} index={i} iconMap={iconMap} />
-            ))}
-          </div>
+          {servicios.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {servicios.map((servicio, i) => (
+                <ServicioCardLink key={servicio.id} servicio={servicio} index={i} iconMap={iconMap} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-white/30 text-sm py-8">Próximamente...</p>
+          )}
         </div>
       </section>
 

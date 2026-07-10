@@ -4,25 +4,14 @@ import { motion } from 'framer-motion'
 import { MapPin, Phone, Clock, MessageCircle } from 'lucide-react'
 import type { Contacto } from '@/lib/types'
 
-const DEFAULT_CONTACTO: Contacto = {
-  id: 1,
-  telefono: '55 3465 0764',
-  whatsapp: '5553465764',
-  email: null,
-  direccion: 'Calle Monte Naranjo #146, Col. Jesús del Monte, Cuajimalpa de Morelos, 05260, CDMX',
-  horario_atencion: 'Lun-Vie: 7:00–21:00 | Sáb: 9:00–14:00',
-  facebook_url: 'https://facebook.com',
-  instagram_url: null,
-}
-
 const items = [
   { icon: MapPin, label: 'Dirección', key: 'direccion' as const },
   { icon: Phone, label: 'Teléfono', key: 'telefono' as const },
   { icon: Clock, label: 'Horario', key: 'horario_atencion' as const },
 ]
 
-export function ContactoSection({ contacto = DEFAULT_CONTACTO }: { contacto?: Contacto }) {
-  const c = contacto ?? DEFAULT_CONTACTO
+export function ContactoSection({ contacto }: { contacto?: Contacto | null }) {
+  const c = contacto ?? null
 
   return (
     <section id="contacto" className="section-geo py-28 px-4 bg-[#0a0a0a]">
@@ -45,7 +34,10 @@ export function ContactoSection({ contacto = DEFAULT_CONTACTO }: { contacto?: Co
             transition={{ duration: 0.6 }}
             className="space-y-0"
           >
-            {items.map(({ icon: Icon, label, key }, i) => {
+            {!c && (
+              <p className="text-white/30 text-sm py-4">Información de contacto próximamente...</p>
+            )}
+            {c && items.map(({ icon: Icon, label, key }, i) => {
               const value = c[key]
               if (!value) return null
               return (
@@ -69,7 +61,7 @@ export function ContactoSection({ contacto = DEFAULT_CONTACTO }: { contacto?: Co
             })}
 
             {/* Social */}
-            {c.facebook_url && (
+            {c && c.facebook_url && (
               <div className="pt-8 flex items-center gap-4">
                 <a
                   href={c.facebook_url}
@@ -86,9 +78,9 @@ export function ContactoSection({ contacto = DEFAULT_CONTACTO }: { contacto?: Co
             )}
 
             {/* WhatsApp CTA */}
-            <div className="pt-8">
+            {c && <div className="pt-8">
               <a
-                href={`https://wa.me/${c.whatsapp ?? '5553465764'}`}
+                href={`https://wa.me/${c.whatsapp ?? ''}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 rounded-full bg-[var(--gold)] text-black font-bold px-8 py-3.5 text-sm tracking-wide hover:bg-amber-400 transition-colors"
@@ -96,7 +88,7 @@ export function ContactoSection({ contacto = DEFAULT_CONTACTO }: { contacto?: Co
                 <MessageCircle className="h-4 w-4" />
                 Escríbenos por WhatsApp
               </a>
-            </div>
+            </div>}
           </motion.div>
 
           {/* Mapa */}

@@ -1,10 +1,9 @@
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { ServicioCard } from './ServicioCard'
-import { SERVICIOS_DEFAULT } from '@/lib/types'
 import type { Servicio } from '@/lib/types'
 
 async function getServicios(): Promise<Servicio[]> {
-  if (!isSupabaseConfigured()) return SERVICIOS_DEFAULT as Servicio[]
+  if (!isSupabaseConfigured()) return []
   try {
     const supabase = await createClient()
     const { data, error } = await supabase
@@ -12,10 +11,10 @@ async function getServicios(): Promise<Servicio[]> {
       .select('*')
       .eq('activo', true)
       .order('orden')
-    if (error || !data?.length) return SERVICIOS_DEFAULT as Servicio[]
-    return data
+    if (error) return []
+    return data ?? []
   } catch {
-    return SERVICIOS_DEFAULT as Servicio[]
+    return []
   }
 }
 
@@ -39,11 +38,15 @@ export async function ServiciosSection() {
           <div className="mt-6 h-px bg-gradient-to-r from-[var(--gold)]/60 via-[var(--gold)]/20 to-transparent" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
-          {servicios.map((s, i) => (
-            <ServicioCard key={(s as Servicio).id ?? s.nombre} servicio={s as Servicio} index={i} />
-          ))}
-        </div>
+        {servicios.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
+            {servicios.map((s, i) => (
+              <ServicioCard key={s.id} servicio={s} index={i} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-white/30 text-sm">Próximamente...</p>
+        )}
       </div>
     </section>
   )

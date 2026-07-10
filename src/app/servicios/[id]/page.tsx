@@ -6,7 +6,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Music, Waves, Flame, Zap, Heart, Dumbbell, ArrowLeft, Clock, Star } from 'lucide-react'
 import { HorariosTable } from '@/components/HorariosTable'
-import { SERVICIOS_DEFAULT } from '@/lib/types'
 import type { Servicio, Profesor, ServicioGaleria } from '@/lib/types'
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -19,11 +18,7 @@ const iconMap: Record<string, React.ReactNode> = {
 }
 
 async function getData(id: string) {
-  // Buscar en defaults si no hay Supabase
-  if (!isSupabaseConfigured()) {
-    const s = SERVICIOS_DEFAULT.find((_, i) => String(i + 1) === id) ?? null
-    return { servicio: s as Servicio | null, profesores: [], galeria: [] }
-  }
+  if (!isSupabaseConfigured()) return null
   try {
     const supabase = await createClient()
     const [servicioRes, profesoresRes, galeriaRes] = await Promise.all([
