@@ -5,9 +5,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Music, Waves, Flame, Zap, Heart, Dumbbell, ArrowRight } from 'lucide-react'
 import { SERVICIOS_DEFAULT } from '@/lib/types'
-import type { Servicio } from '@/lib/types'
+import type { Servicio, Profesor } from '@/lib/types'
 
 export const metadata = { title: 'Servicios — Academia JM' }
+
+const PROFESORES_DEFAULT = [
+  { nombre: 'Instructor JM', especialidad: 'Salsa · Cumbia', bio: 'Instructor certificado con más de 10 años de experiencia en bailes latinos.' },
+  { nombre: 'Maestra JM', especialidad: 'Zumba · Yoga', bio: 'Especialista en bienestar físico y mental. Certificada en Zumba y Hatha Yoga.' },
+  { nombre: 'Coach JM', especialidad: 'Jumping · Fitness', bio: 'Entrenador de alto impacto con enfoque en rendimiento cardiovascular y fuerza.' },
+]
 
 const iconMap: Record<string, React.ReactNode> = {
   Music: <Music className="h-10 w-10" />,
@@ -33,8 +39,23 @@ async function getServicios(): Promise<Servicio[]> {
   }
 }
 
+async function getProfesores(): Promise<Profesor[]> {
+  if (!isSupabaseConfigured()) return []
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('profesores')
+      .select('*')
+      .eq('activo', true)
+      .order('orden')
+    return data ?? []
+  } catch {
+    return []
+  }
+}
+
 export default async function ServiciosPage() {
-  const servicios = await getServicios()
+  const [servicios, profesores] = await Promise.all([getServicios(), getProfesores()])
 
   return (
     <div className="min-h-screen">
@@ -63,6 +84,27 @@ export default async function ServiciosPage() {
               <ServicioCardLink key={servicio.id ?? servicio.nombre} servicio={servicio} index={i} iconMap={iconMap} />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Instructores */}
+      <section className="section-geo py-24 px-4 bg-[#0d0d0d]">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-14">
+            <p className="text-sm font-semibold uppercase tracking-widest text-[var(--gold)] mb-3">Equipo</p>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Nuestros instructores</h2>
+            <div className="w-12 h-px bg-gradient-to-r from-[var(--gold)] to-[var(--blue-jm)]" />
+          </div>
+
+          {profesores.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {profesores.map((p) => <ProfesorCard key={p.id} profesor={p} />)}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {PROFESORES_DEFAULT.map((p) => <ProfesorCardPlaceholder key={p.nombre} profesor={p} />)}
+            </div>
+          )}
         </div>
       </section>
     </div>
@@ -115,5 +157,49 @@ function ServicioCardLink({
         </div>
       </div>
     </Link>
+  )
+}
+
+function ProfesorCard({ profesor }: { profesor: Profesor }) {
+  return (
+    <div className="group rounded-2xl border border-white/10 bg-white/5 overflow-hidden hover:border-[var(--gold)]/40 transition-colors">
+      <div className="relative h-60 bg-gradient-to-br from-fuchsia-900/20 to-blue-900/30 flex items-center justify-center">
+        {profesor.foto_url ? (
+          <Image src={profesor.foto_url} alt={profesor.nombre} fill className="object-cover object-top" />
+        ) : (
+          <div className="h-20 w-20 rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
+            <span className="text-3xl font-black text-[var(--gold)]">{profesor.nombre.charAt(0)}</span>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      </div>
+      <div className="p-6">
+        <h3 className="font-black text-lg text-white mb-1">{profesor.nombre}</h3>
+        {profesor.especialidad && (
+          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--gold)] mb-3">{profesor.especialidad}</p>
+        )}
+        {profesor.bio && (
+          <p className="text-sm text-white/50 leading-relaxed">{profesor.bio}</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function ProfesorCardPlaceholder({ profesor }: { profesor: typeof PROFESORES_DEFAULT[0] }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+      <div className="relative h-60 bg-gradient-to-br from-fuchsia-900/20 to-blue-900/30 flex items-center justify-center">
+        <div className="h-20 w-20 rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
+          <span className="text-3xl font-black text-[var(--gold)]">{profesor.nombre.charAt(0)}</span>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      </div>
+      <div className="p-6">
+        <h3 className="font-black text-lg text-white mb-1">{profesor.nombre}</h3>
+        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--gold)] mb-3">{profesor.especialidad}</p>
+        <p className="text-sm text-white/50 leading-relaxed">{profesor.bio}</p>
+      </div>
+    </div>
   )
 }
