@@ -80,7 +80,7 @@ export default function ServiciosAdmin() {
       toast.success('Servicio actualizado')
     } else {
       const { error } = await supabase.from('servicios').insert(payload)
-      if (error) { toast.error('Error al crear'); setSaving(false); return }
+      if (error) { toast.error(`Error al crear: ${error.message}`); setSaving(false); return }
       toast.success('Servicio creado')
     }
     setOpen(false); setSaving(false); fetchServicios()
