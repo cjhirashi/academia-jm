@@ -8,11 +8,6 @@ import type { Servicio, Profesor } from '@/lib/types'
 
 export const metadata = { title: 'Servicios — Academia JM' }
 
-const PROFESORES_DEFAULT = [
-  { nombre: 'Instructor JM', especialidad: 'Salsa · Cumbia', bio: 'Instructor certificado con más de 10 años de experiencia en bailes latinos.' },
-  { nombre: 'Maestra JM', especialidad: 'Zumba · Yoga', bio: 'Especialista en bienestar físico y mental. Certificada en Zumba y Hatha Yoga.' },
-  { nombre: 'Coach JM', especialidad: 'Jumping · Fitness', bio: 'Entrenador de alto impacto con enfoque en rendimiento cardiovascular y fuerza.' },
-]
 
 const iconMap: Record<string, React.ReactNode> = {
   Music: <Music className="h-10 w-10" />,
@@ -104,9 +99,7 @@ export default async function ServiciosPage() {
               {profesores.map((p) => <ProfesorCard key={p.id} profesor={p} />)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {PROFESORES_DEFAULT.map((p) => <ProfesorCardPlaceholder key={p.nombre} profesor={p} />)}
-            </div>
+            <p className="text-white/30 text-sm">Próximamente...</p>
           )}
         </div>
       </section>
@@ -189,20 +182,3 @@ function ProfesorCard({ profesor }: { profesor: Profesor }) {
   )
 }
 
-function ProfesorCardPlaceholder({ profesor }: { profesor: typeof PROFESORES_DEFAULT[0] }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-      <div className="relative h-60 bg-gradient-to-br from-fuchsia-900/20 to-blue-900/30 flex items-center justify-center">
-        <div className="h-20 w-20 rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
-          <span className="text-3xl font-black text-[var(--gold)]">{profesor.nombre.charAt(0)}</span>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-      </div>
-      <div className="p-6">
-        <h3 className="font-black text-lg text-white mb-1">{profesor.nombre}</h3>
-        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--gold)] mb-3">{profesor.especialidad}</p>
-        <p className="text-sm text-white/50 leading-relaxed">{profesor.bio}</p>
-      </div>
-    </div>
-  )
-}
