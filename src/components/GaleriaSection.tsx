@@ -5,12 +5,12 @@ import Image from 'next/image'
 import type { GaleriaItem } from '@/lib/types'
 
 const PLACEHOLDERS = [
-  { id: '1', color: 'from-amber-600/40 to-amber-900/60', label: 'Salsa' },
-  { id: '2', color: 'from-purple-600/40 to-purple-900/60', label: 'Cumbia' },
-  { id: '3', color: 'from-rose-600/40 to-rose-900/60', label: 'Zumba' },
-  { id: '4', color: 'from-emerald-600/40 to-emerald-900/60', label: 'Yoga' },
-  { id: '5', color: 'from-sky-600/40 to-sky-900/60', label: 'Jumping' },
-  { id: '6', color: 'from-orange-600/40 to-orange-900/60', label: 'Clases' },
+  { id: '1', color: 'from-fuchsia-700/50 to-pink-950/80', label: 'Salsa' },
+  { id: '2', color: 'from-sky-600/50 to-blue-950/80', label: 'Cumbia' },
+  { id: '3', color: 'from-pink-600/50 to-fuchsia-950/80', label: 'Zumba' },
+  { id: '4', color: 'from-cyan-600/50 to-sky-950/80', label: 'Yoga' },
+  { id: '5', color: 'from-fuchsia-600/40 to-blue-950/70', label: 'Jumping' },
+  { id: '6', color: 'from-blue-600/40 to-pink-950/70', label: 'Clases' },
 ]
 
 export function GaleriaSection({ items }: { items: GaleriaItem[] }) {

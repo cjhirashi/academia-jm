@@ -127,7 +127,7 @@ export default async function ServicioDetallePage({ params }: { params: Promise<
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className={`rounded-xl bg-gradient-to-br from-amber-900/20 to-purple-900/20 flex items-center justify-center ${i === 0 ? 'col-span-2 row-span-2 aspect-video' : 'aspect-square'}`}
+                  className={`rounded-xl bg-gradient-to-br from-fuchsia-900/20 to-blue-900/20 flex items-center justify-center ${i === 0 ? 'col-span-2 row-span-2 aspect-video' : 'aspect-square'}`}
                 >
                   <span className="text-muted-foreground text-xs">Foto {i + 1}</span>
                 </div>
@@ -163,7 +163,7 @@ export default async function ServicioDetallePage({ params }: { params: Promise<
         </section>
 
         {/* CTA */}
-        <section className="rounded-2xl bg-gradient-to-br from-amber-900/20 to-purple-900/20 border border-[var(--gold)]/20 p-10 text-center">
+        <section className="rounded-2xl bg-gradient-to-br from-fuchsia-900/20 to-blue-900/20 border border-[var(--gold)]/20 p-10 text-center">
           <Star className="h-8 w-8 text-[var(--gold)] mx-auto mb-4" />
           <h2 className="text-3xl font-black mb-3">¿Listo para empezar {servicio.nombre}?</h2>
           <p className="text-muted-foreground mb-6">La primera clase de prueba es gratis. ¡Escríbenos y reserva tu lugar!</p>
@@ -185,7 +185,7 @@ function ProfesorCard({ profesor }: { profesor: Profesor }) {
   return (
     <div className="rounded-2xl border border-border/60 bg-card overflow-hidden">
       {/* Foto */}
-      <div className="relative h-56 bg-gradient-to-br from-amber-900/20 to-purple-900/30 flex items-center justify-center">
+      <div className="relative h-56 bg-gradient-to-br from-fuchsia-900/20 to-blue-900/30 flex items-center justify-center">
         {profesor.foto_url ? (
           <Image src={profesor.foto_url} alt={profesor.nombre} fill className="object-cover object-top" />
         ) : (

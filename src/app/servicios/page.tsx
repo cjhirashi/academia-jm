@@ -39,13 +39,13 @@ export default async function ServiciosPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="relative py-24 px-4 overflow-hidden bg-gradient-to-br from-[#0D0D0D] via-[#1a0a2e] to-[#0D0D0D]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-transparent to-transparent" />
+      <section className="relative py-24 px-4 overflow-hidden bg-gradient-to-br from-[#0D0D0D] via-[#150510] to-[#0D0D0D]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-fuchsia-900/20 via-transparent to-transparent" />
         <div className="relative z-10 text-center max-w-3xl mx-auto">
-          <p className="text-sm font-semibold uppercase tracking-widest text-amber-400 mb-4">Academia JM</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-[var(--gold)] mb-4">Academia JM</p>
           <h1 className="text-5xl md:text-6xl font-black text-white mb-6">
             Nuestros{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--gold)] to-[var(--blue-jm)]">
               Servicios
             </span>
           </h1>
@@ -87,7 +87,7 @@ function ServicioCardLink({
       className="group block rounded-2xl border border-border/60 hover:border-[var(--gold)]/50 bg-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg"
     >
       {/* Imagen o placeholder */}
-      <div className="relative h-52 bg-gradient-to-br from-amber-900/30 to-purple-900/30 flex items-center justify-center overflow-hidden">
+      <div className="relative h-52 bg-gradient-to-br from-fuchsia-900/30 to-blue-900/30 flex items-center justify-center overflow-hidden">
         {servicio.imagen_url ? (
           <Image
             src={servicio.imagen_url}

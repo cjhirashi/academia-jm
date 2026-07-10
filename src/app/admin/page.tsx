@@ -26,8 +26,8 @@ export default async function AdminDashboard() {
   const stats = await getStats()
 
   const cards = [
-    { title: 'Servicios activos', value: stats.servicios, icon: Dumbbell, href: '/admin/servicios', color: 'text-amber-500' },
-    { title: 'Imágenes en galería', value: stats.galeria, icon: Image, href: '/admin/galeria', color: 'text-purple-500' },
+    { title: 'Servicios activos', value: stats.servicios, icon: Dumbbell, href: '/admin/servicios', color: 'text-fuchsia-500' },
+    { title: 'Imágenes en galería', value: stats.galeria, icon: Image, href: '/admin/galeria', color: 'text-sky-500' },
     { title: 'Horarios registrados', value: stats.horarios, icon: Calendar, href: '/admin/horarios', color: 'text-rose-500' },
     { title: 'Información de contacto', value: '—', icon: Phone, href: '/admin/contacto', color: 'text-emerald-500' },
   ]

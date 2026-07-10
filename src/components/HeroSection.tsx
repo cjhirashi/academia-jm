@@ -3,22 +3,21 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { MessageCircle, ArrowRight } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 
 const clases = ['Salsa', 'Cumbia', 'Zumba', 'Jumping', 'Yoga']
 
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]">
-      {/* Fondo — capas de profundidad */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0a15] to-[#0a0a0a]" />
+      {/* Fondo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f050d] to-[#0a0a0a]" />
 
-      {/* Manchas de luz ambiental */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-amber-900/15 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-purple-900/10 blur-[100px] pointer-events-none" />
+      {/* Glows 80s: rosa + azul */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-fuchsia-900/25 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-blue-900/20 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-pink-900/10 blur-[80px] pointer-events-none" />
 
-      {/* Líneas decorativas diagonales */}
+      {/* Líneas decorativas */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" style={{ left: '20%' }} />
         <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" style={{ left: '80%' }} />
@@ -44,7 +43,7 @@ export function HeroSection() {
             Escuela de Baile y Bienestar
           </motion.p>
 
-          {/* Título principal */}
+          {/* Título */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -58,12 +57,12 @@ export function HeroSection() {
             </h1>
           </motion.div>
 
-          {/* Separador dorado */}
+          {/* Separador rosa→azul */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="h-px w-16 bg-[var(--gold)] mx-auto my-8 origin-left"
+            className="h-px w-16 bg-gradient-to-r from-[var(--gold)] to-[var(--blue-jm)] mx-auto my-8 origin-left"
           />
 
           {/* Tagline */}
@@ -85,7 +84,7 @@ export function HeroSection() {
           >
             <Link
               href="/horarios"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--gold)] text-black font-bold px-8 py-3 text-sm tracking-wide hover:bg-amber-400 transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--gold)] text-white font-bold px-8 py-3 text-sm tracking-wide hover:brightness-110 transition-all"
             >
               Ver Horarios <ArrowRight className="h-4 w-4" />
             </Link>
@@ -93,24 +92,25 @@ export function HeroSection() {
               href="https://wa.me/5553465764"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 text-white font-medium px-8 py-3 text-sm tracking-wide hover:bg-white/10 hover:border-white/40 transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--blue-jm)]/40 text-[var(--blue-jm)] font-medium px-8 py-3 text-sm tracking-wide hover:bg-[var(--blue-jm)]/10 hover:border-[var(--blue-jm)] transition-colors"
             >
               <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>
           </motion.div>
         </motion.div>
 
-        {/* Clases chip list debajo del card */}
+        {/* Clases chips */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1, duration: 0.6 }}
           className="mt-8 flex flex-wrap gap-2 justify-center"
         >
-          {clases.map((c) => (
+          {clases.map((c, i) => (
             <span
               key={c}
               className="text-xs font-medium tracking-widest uppercase text-white/30 border border-white/10 px-4 py-2"
+              style={{ borderColor: i % 2 === 0 ? 'rgb(233 30 140 / 0.2)' : 'rgb(0 191 255 / 0.2)' }}
             >
               {c}
             </span>
@@ -129,7 +129,7 @@ export function HeroSection() {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-px h-8 bg-gradient-to-b from-white/20 to-transparent"
+          className="w-px h-8 bg-gradient-to-b from-[var(--gold)] to-transparent"
         />
       </motion.div>
     </section>

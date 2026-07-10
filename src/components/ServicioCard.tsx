@@ -27,7 +27,7 @@ export function ServicioCard({ servicio, index }: { servicio: Servicio; index: n
     >
       <Link href={href} className="group block relative overflow-hidden bg-[#111] hover:bg-[#161616] transition-colors">
         {/* Imagen */}
-        <div className="relative h-56 overflow-hidden bg-gradient-to-br from-[#1a1208] to-[#110a1a] flex items-center justify-center">
+        <div className="relative h-56 overflow-hidden bg-gradient-to-br from-[#1a0812] to-[#0a0a1a] flex items-center justify-center">
           {servicio.imagen_url ? (
             <Image
               src={servicio.imagen_url}

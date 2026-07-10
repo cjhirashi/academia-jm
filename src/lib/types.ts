@@ -65,13 +65,13 @@ export type Contacto = {
 export const DIAS_SEMANA = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
 export const COLORES_SERVICIO = [
-  'bg-amber-500',
-  'bg-purple-600',
-  'bg-rose-500',
-  'bg-emerald-500',
+  'bg-fuchsia-600',
   'bg-sky-500',
-  'bg-orange-500',
   'bg-pink-500',
+  'bg-blue-500',
+  'bg-rose-500',
+  'bg-cyan-600',
+  'bg-violet-500',
 ]
 
 export const SERVICIOS_DEFAULT: Omit<Servicio, 'id' | 'created_at'>[] = [
