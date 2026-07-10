@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
-import { ThemeToggle } from './ThemeToggle'
 import { cn } from '@/lib/utils'
 
 const links = [
@@ -54,12 +53,10 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
-          <ThemeToggle />
         </nav>
 
         {/* Mobile */}
         <div className="flex md:hidden items-center gap-3">
-          <ThemeToggle />
           <button
             onClick={() => setOpen(!open)}
             className="p-2 text-white/70 hover:text-white transition-colors"
