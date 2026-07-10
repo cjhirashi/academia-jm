@@ -113,23 +113,6 @@ export default async function ServicioDetallePage({ params }: { params: Promise<
           </section>
         )}
 
-        {/* Sin galería — placeholders */}
-        {galeria.length === 0 && (
-          <section>
-            <p className="text-sm font-semibold uppercase tracking-widest text-[var(--gold)] mb-4">Galería</p>
-            <h2 className="text-3xl font-black mb-8">Fotos de la clase</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {[...Array(6)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`rounded-xl bg-gradient-to-br from-fuchsia-900/20 to-blue-900/20 flex items-center justify-center ${i === 0 ? 'col-span-2 row-span-2 aspect-video' : 'aspect-square'}`}
-                >
-                  <span className="text-muted-foreground text-xs">Foto {i + 1}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Profesores */}
         {profesores.length > 0 && (
