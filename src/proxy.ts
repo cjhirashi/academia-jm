@@ -1,7 +1,19 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const isSupabaseConfigured = () =>
+  process.env.NEXT_PUBLIC_SUPABASE_URL?.startsWith('https://') &&
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.length > 10
+
 export async function proxy(request: NextRequest) {
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
+  const isLoginRoute = request.nextUrl.pathname === '/admin/login'
+
+  // Si Supabase no está configurado, permitir acceso libre a login y bloquear el resto
+  if (!isSupabaseConfigured()) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -23,10 +35,13 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginRoute = request.nextUrl.pathname === '/admin/login'
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch {
+    // Si falla la autenticación, tratar como no autenticado
+  }
 
   if (isAdminRoute && !isLoginRoute && !user) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
