@@ -38,7 +38,7 @@ export default async function HomePage() {
       <BeneficiosSection />
 
       {/* Horarios preview */}
-      <section className="py-20 px-4 bg-[var(--m3-surface)]">
+      <section className="py-20 px-4 bg-[var(--m3-surface-container)]">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10">
             <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Horarios</p>

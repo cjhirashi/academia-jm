@@ -18,7 +18,7 @@ export async function ServiciosSection() {
   const servicios = await getServicios()
 
   return (
-    <section id="servicios" className="py-20 px-4 bg-[var(--m3-bg)]">
+    <section id="servicios" className="py-20 px-4 bg-[var(--m3-surface-container)]">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Nuestras Clases</p>

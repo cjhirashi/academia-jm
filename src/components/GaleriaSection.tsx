@@ -7,7 +7,7 @@ import type { GaleriaItem } from '@/lib/types'
 export function GaleriaSection({ items }: { items: GaleriaItem[] }) {
   if (items.length === 0) {
     return (
-      <section id="galeria" className="py-20 px-4 bg-[var(--m3-surface)]">
+      <section id="galeria" className="py-20 px-4 bg-[var(--m3-bg)]">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10">
             <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Galería</p>
@@ -20,7 +20,7 @@ export function GaleriaSection({ items }: { items: GaleriaItem[] }) {
   }
 
   return (
-    <section id="galeria" className="py-20 px-4 bg-[var(--m3-surface)]">
+    <section id="galeria" className="py-20 px-4 bg-[var(--m3-bg)]">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Galería</p>

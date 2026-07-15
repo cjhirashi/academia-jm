@@ -28,7 +28,7 @@ const beneficios = [
 
 export function BeneficiosSection() {
   return (
-    <section className="py-20 px-4 bg-[var(--m3-surface)]">
+    <section className="py-20 px-4 bg-[var(--m3-bg)]">
       <div className="mx-auto max-w-6xl">
         <div className="text-center mb-12">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Por qué elegirnos</p>
