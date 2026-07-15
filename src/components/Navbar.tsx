@@ -40,7 +40,10 @@ export function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="font-[family-name:var(--font-script)] text-xl text-[var(--m3-on-surface)] hover:text-[var(--gold)] transition-colors"
+          className={cn(
+            'font-[family-name:var(--font-script)] text-xl transition-colors hover:text-[var(--gold)]',
+            scrolled ? 'text-[var(--m3-on-surface)]' : 'text-white drop-shadow'
+          )}
         >
           Academia JM
         </Link>
@@ -56,8 +59,10 @@ export function Navbar() {
                 className={cn(
                   'relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium tracking-[0.1px] transition-colors',
                   active
-                    ? 'text-[var(--gold)] bg-[var(--gold)]/10'
-                    : 'text-[var(--m3-on-surface-v)] hover:text-[var(--m3-on-surface)] hover:bg-[var(--m3-surface-high)]'
+                    ? 'text-[var(--gold)] bg-[var(--gold)]/20'
+                    : scrolled
+                      ? 'text-[var(--m3-on-surface-v)] hover:text-[var(--m3-on-surface)] hover:bg-[var(--m3-surface-high)]'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
                 )}
               >
                 <l.icon className="h-4 w-4" />
@@ -68,7 +73,7 @@ export function Navbar() {
               </Link>
             )
           })}
-          <div className="ml-2 pl-2 border-l border-[var(--m3-outline-v)]">
+          <div className={cn('ml-2 pl-2 border-l', scrolled ? 'border-[var(--m3-outline-v)]' : 'border-white/20')}>
             <ThemeToggle />
           </div>
         </nav>
@@ -78,7 +83,12 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setOpen(!open)}
-            className="w-10 h-10 flex items-center justify-center rounded-full text-[var(--m3-on-surface-v)] hover:bg-[var(--m3-surface-high)] transition-colors"
+            className={cn(
+              'w-10 h-10 flex items-center justify-center rounded-full transition-colors',
+              scrolled
+                ? 'text-[var(--m3-on-surface-v)] hover:bg-[var(--m3-surface-high)]'
+                : 'text-white/80 hover:bg-white/10'
+            )}
             aria-label="Menú"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
