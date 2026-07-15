@@ -38,18 +38,18 @@ export default async function HomePage() {
       <BeneficiosSection />
 
       {/* Horarios preview */}
-      <section className="py-20 px-4 bg-[#141218]">
+      <section className="py-20 px-4 bg-[var(--m3-surface)]">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10">
             <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Horarios</p>
-            <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9] mb-1">Encuentra tu clase</h2>
-            <p className="text-[14px] leading-[20px] text-[#CAC4D0]">Consulta los próximos horarios disponibles.</p>
+            <h2 className="text-[32px] font-normal leading-[40px] text-[var(--m3-on-surface)] mb-1">Encuentra tu clase</h2>
+            <p className="text-[14px] leading-[20px] text-[var(--m3-on-surface-v)]">Consulta los próximos horarios disponibles.</p>
           </div>
           <HorariosTable preview />
           <div className="mt-8">
             <Link
               href="/horarios"
-              className="inline-flex items-center gap-2 rounded-full border border-[#938F99] text-[#CAC4D0] font-medium px-6 py-2.5 text-[14px] tracking-[0.1px] hover:bg-white/8 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--m3-outline)] text-[var(--m3-on-surface-v)] font-medium px-6 py-2.5 text-[14px] tracking-[0.1px] hover:bg-[var(--m3-surface-high)] transition-colors"
             >
               Ver horario completo <ArrowRight className="h-4 w-4" />
             </Link>
