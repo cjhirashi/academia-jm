@@ -63,6 +63,15 @@ export type Contacto = {
   mapa_embed_url: string | null
 }
 
+export type Beneficio = {
+  id: string
+  icono: string
+  titulo: string
+  descripcion: string
+  orden: number
+  activo: boolean
+}
+
 export const DIAS_SEMANA = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
 export const COLORES_SERVICIO = [

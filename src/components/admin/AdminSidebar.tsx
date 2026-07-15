@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
-import { Star, LayoutDashboard, Dumbbell, Calendar, Image, Phone, LogOut, Users, X } from 'lucide-react'
+import { Star, LayoutDashboard, Dumbbell, Calendar, Image, Phone, LogOut, Users, X, Award } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
@@ -12,6 +12,7 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/servicios', label: 'Servicios', icon: Dumbbell },
   { href: '/admin/profesores', label: 'Profesores', icon: Users },
+  { href: '/admin/beneficios', label: 'Beneficios', icon: Award },
   { href: '/admin/horarios', label: 'Horarios', icon: Calendar },
   { href: '/admin/galeria', label: 'Galería', icon: Image },
   { href: '/admin/contacto', label: 'Contacto', icon: Phone },
