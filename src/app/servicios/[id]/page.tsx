@@ -71,13 +71,13 @@ export default async function ServicioDetallePage({ params }: { params: Promise<
             </div>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-8 max-w-6xl mx-auto">
-          <Link href="/servicios" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-[var(--gold)] transition-colors mb-4">
+          <Link href="/servicios" className="inline-flex items-center gap-1 text-sm text-[var(--m3-on-surface-v)] hover:text-[var(--gold)] transition-colors mb-4">
             <ArrowLeft className="h-4 w-4" /> Todos los servicios
           </Link>
-          <h1 className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">{servicio.nombre}</h1>
+          <h1 className="text-4xl md:text-5xl font-black text-[var(--m3-on-surface)]">{servicio.nombre}</h1>
         </div>
       </section>
 
