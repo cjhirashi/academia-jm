@@ -13,7 +13,8 @@ import { Plus, Pencil, Trash2, Loader2, Upload } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import type { Profesor } from '@/lib/types'
-import { crearProfesor, actualizarProfesor, eliminarProfesor, toggleActivoProfesor, uploadProfesorFoto } from './actions'
+import { crearProfesor, actualizarProfesor, eliminarProfesor, toggleActivoProfesor } from './actions'
+import { uploadToStorage } from '@/lib/storage'
 
 const defaultForm = { nombre: '', especialidad: '', bio: '', foto_url: '', orden: 0, activo: true }
 
@@ -46,14 +47,16 @@ export default function ProfesoresAdmin() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const fd = new FormData()
-    fd.append('file', file)
-    const { error, url } = await uploadProfesorFoto(fd)
-    if (error || !url) { toast.error('Error al subir foto'); setUploading(false); return }
-    setForm((prev) => ({ ...prev, foto_url: url }))
-    setUploading(false)
-    toast.success('Foto subida')
-    e.target.value = ''
+    try {
+      const url = await uploadToStorage(file, 'profesores', '')
+      setForm((prev) => ({ ...prev, foto_url: url }))
+      toast.success('Foto subida')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Error al subir foto')
+    } finally {
+      setUploading(false)
+      e.target.value = ''
+    }
   }
 
   const handleSave = async () => {

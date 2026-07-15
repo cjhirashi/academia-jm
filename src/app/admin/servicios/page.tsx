@@ -14,7 +14,9 @@ import { Plus, Pencil, Trash2, Loader2, Settings, Upload, X, UserPlus } from 'lu
 import { toast } from 'sonner'
 import Image from 'next/image'
 import type { Servicio, Profesor, ServicioGaleria } from '@/lib/types'
-import { crearServicio, actualizarServicio, eliminarServicio, toggleActivoServicio, asignarProfesor, desasignarProfesor, eliminarGaleriaItem, uploadServicioCover, uploadGaleriaImage } from './actions'
+import { crearServicio, actualizarServicio, eliminarServicio, toggleActivoServicio, asignarProfesor, desasignarProfesor, eliminarGaleriaItem } from './actions'
+import { saveGaleriaItem } from '@/app/admin/upload-actions'
+import { uploadToStorage } from '@/lib/storage'
 
 const ICONOS = ['Music', 'Waves', 'Flame', 'Zap', 'Heart', 'Dumbbell']
 
@@ -119,14 +121,16 @@ export default function ServiciosAdmin() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploadingCover(true)
-    const fd = new FormData()
-    fd.append('file', file)
-    const { error, url } = await uploadServicioCover(fd)
-    if (error || !url) { toast.error('Error al subir imagen'); setUploadingCover(false); return }
-    setForm((prev) => ({ ...prev, imagen_url: url }))
-    setUploadingCover(false)
-    toast.success('Imagen de portada subida')
-    e.target.value = ''
+    try {
+      const url = await uploadToStorage(file, 'servicios', 'covers')
+      setForm((prev) => ({ ...prev, imagen_url: url }))
+      toast.success('Imagen de portada subida')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Error al subir imagen')
+    } finally {
+      setUploadingCover(false)
+      e.target.value = ''
+    }
   }
 
   // Gestionar: galeria per-service
@@ -134,18 +138,21 @@ export default function ServiciosAdmin() {
     const files = Array.from(e.target.files ?? [])
     if (!files.length || !gestionServicio) return
     setUploadingGaleria(true)
+    let subidas = 0
     for (const file of files) {
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('servicioId', gestionServicio.id)
-      fd.append('orden', String(servicioGaleria.length + 1))
-      fd.append('alt', gestionServicio.nombre)
-      const { error, item } = await uploadGaleriaImage(fd)
-      if (error) { toast.error(`Error: ${file.name}`); continue }
-      if (item) setServicioGaleria((prev) => [...prev, item as ServicioGaleria])
+      try {
+        const url = await uploadToStorage(file, 'servicios', gestionServicio.id)
+        const orden = servicioGaleria.length + subidas + 1
+        const { error, item } = await saveGaleriaItem(gestionServicio.id, url, gestionServicio.nombre, orden)
+        if (error) { toast.error(`Error guardando: ${file.name}`); continue }
+        if (item) setServicioGaleria((prev) => [...prev, item])
+        subidas++
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : `Error: ${file.name}`)
+      }
     }
     setUploadingGaleria(false)
-    toast.success('Fotos subidas')
+    if (subidas > 0) toast.success(`${subidas} foto${subidas > 1 ? 's' : ''} subida${subidas > 1 ? 's' : ''}`)
     e.target.value = ''
   }
 
