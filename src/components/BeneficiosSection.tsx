@@ -6,15 +6,8 @@ const iconMap: Record<string, React.ElementType> = {
   Award, Users, Clock, Heart, Star, Zap, Music, Flame, Dumbbell, Waves, Shield, Trophy,
 }
 
-const DEFAULT_BENEFICIOS: Beneficio[] = [
-  { id: '1', icono: 'Award', titulo: 'Instructores certificados', descripcion: 'Nuestros maestros cuentan con certificaciones y años de experiencia en sus disciplinas.', orden: 1, activo: true },
-  { id: '2', icono: 'Users', titulo: 'Ambiente familiar', descripcion: 'Un espacio seguro y acogedor donde todos son bienvenidos, sin importar tu nivel o edad.', orden: 2, activo: true },
-  { id: '3', icono: 'Clock', titulo: 'Horarios flexibles', descripcion: 'Clases en la mañana y en la tarde-noche para que puedas asistir sin importar tu rutina.', orden: 3, activo: true },
-  { id: '4', icono: 'Heart', titulo: 'Bienestar integral', descripcion: 'Combinamos baile, fitness y espiritualidad para tu desarrollo físico, artístico y mental.', orden: 4, activo: true },
-]
-
 async function getBeneficios(): Promise<Beneficio[]> {
-  if (!isSupabaseConfigured()) return DEFAULT_BENEFICIOS
+  if (!isSupabaseConfigured()) return []
   try {
     const supabase = await createClient()
     const { data, error } = await supabase
@@ -22,10 +15,10 @@ async function getBeneficios(): Promise<Beneficio[]> {
       .select('*')
       .eq('activo', true)
       .order('orden')
-    if (error || !data || data.length === 0) return DEFAULT_BENEFICIOS
-    return data as Beneficio[]
+    if (error) return []
+    return (data ?? []) as Beneficio[]
   } catch {
-    return DEFAULT_BENEFICIOS
+    return []
   }
 }
 
