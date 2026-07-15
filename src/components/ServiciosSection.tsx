@@ -18,12 +18,12 @@ export async function ServiciosSection() {
   const servicios = await getServicios()
 
   return (
-    <section id="servicios" className="py-20 px-4 bg-[#0F0D13]">
+    <section id="servicios" className="py-20 px-4 bg-[var(--m3-bg)]">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Nuestras Clases</p>
-          <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9] mb-1">Lo que ofrecemos</h2>
-          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0] max-w-md">
+          <h2 className="text-[32px] font-normal leading-[40px] text-[var(--m3-on-surface)] mb-1">Lo que ofrecemos</h2>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[var(--m3-on-surface-v)] max-w-md">
             Instructores certificados para todos los niveles. Elige la disciplina que más te apasione.
           </p>
         </div>
@@ -35,7 +35,7 @@ export async function ServiciosSection() {
             ))}
           </div>
         ) : (
-          <p className="text-[#938F99] text-[14px] py-8">Próximamente...</p>
+          <p className="text-[var(--m3-outline)] text-[14px] py-8">Próximamente...</p>
         )}
       </div>
     </section>

@@ -21,13 +21,13 @@ export default async function HorariosPage() {
   const servicios = await getServicios()
 
   return (
-    <div className="min-h-screen bg-[#0F0D13] pt-24 pb-20 px-4">
+    <div className="min-h-screen bg-[var(--m3-bg)] pt-24 pb-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* M3 Page header */}
         <div className="mb-10">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Horarios</p>
-          <h1 className="text-[45px] font-normal leading-[52px] text-[#E6E0E9] mb-2">Clases semanales</h1>
-          <p className="text-[16px] leading-[24px] tracking-[0.5px] text-[#CAC4D0] max-w-xl">
+          <h1 className="text-[45px] font-normal leading-[52px] text-[var(--m3-on-surface)] mb-2">Clases semanales</h1>
+          <p className="text-[16px] leading-[24px] tracking-[0.5px] text-[var(--m3-on-surface-v)] max-w-xl">
             Consulta el horario completo y elige la clase que mejor se adapte a tu día.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default async function HorariosPage() {
           </div>
         )}
 
-        <p className="mt-6 text-[12px] leading-[16px] tracking-[0.4px] text-[#938F99]">
+        <p className="mt-6 text-[12px] leading-[16px] tracking-[0.4px] text-[var(--m3-outline)]">
           * Los horarios pueden variar. Contáctanos para confirmar disponibilidad.
         </p>
       </div>

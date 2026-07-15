@@ -7,25 +7,25 @@ import type { GaleriaItem } from '@/lib/types'
 export function GaleriaSection({ items }: { items: GaleriaItem[] }) {
   if (items.length === 0) {
     return (
-      <section id="galeria" className="py-20 px-4 bg-[#141218]">
+      <section id="galeria" className="py-20 px-4 bg-[var(--m3-surface)]">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10">
             <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Galería</p>
-            <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9]">Nuestro ambiente</h2>
+            <h2 className="text-[32px] font-normal leading-[40px] text-[var(--m3-on-surface)]">Nuestro ambiente</h2>
           </div>
-          <p className="text-[#938F99] text-[14px]">Próximamente...</p>
+          <p className="text-[var(--m3-outline)] text-[14px]">Próximamente...</p>
         </div>
       </section>
     )
   }
 
   return (
-    <section id="galeria" className="py-20 px-4 bg-[#141218]">
+    <section id="galeria" className="py-20 px-4 bg-[var(--m3-surface)]">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Galería</p>
-          <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9] mb-1">Nuestro ambiente</h2>
-          <p className="text-[14px] leading-[20px] text-[#CAC4D0]">
+          <h2 className="text-[32px] font-normal leading-[40px] text-[var(--m3-on-surface)] mb-1">Nuestro ambiente</h2>
+          <p className="text-[14px] leading-[20px] text-[var(--m3-on-surface-v)]">
             Conoce nuestras instalaciones y vive la experiencia Academia JM.
           </p>
         </div>
@@ -38,7 +38,7 @@ export function GaleriaSection({ items }: { items: GaleriaItem[] }) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="relative overflow-hidden rounded-[16px] aspect-square bg-[#211F26]"
+              className="relative overflow-hidden rounded-[16px] aspect-square bg-[var(--m3-surface-container)]"
             >
               <Image
                 src={item.url}

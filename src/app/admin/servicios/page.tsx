@@ -14,11 +14,12 @@ import { Plus, Pencil, Trash2, Loader2, Settings, Upload, X, UserPlus } from 'lu
 import { toast } from 'sonner'
 import Image from 'next/image'
 import type { Servicio, Profesor, ServicioGaleria } from '@/lib/types'
-import { crearServicio, actualizarServicio, eliminarServicio, toggleActivoServicio, asignarProfesor, desasignarProfesor, eliminarGaleriaItem } from './actions'
+import { crearServicio, actualizarServicio, eliminarServicio, toggleActivoServicio, asignarProfesor, desasignarProfesor, eliminarGaleriaItem, uploadServicioCover, uploadGaleriaImage } from './actions'
 
 const ICONOS = ['Music', 'Waves', 'Flame', 'Zap', 'Heart', 'Dumbbell']
 
 const defaultForm = { nombre: '', descripcion: '', icono: 'Music', imagen_url: '', orden: 0, activo: true }
+
 
 export default function ServiciosAdmin() {
   const [servicios, setServicios] = useState<Servicio[]>([])
@@ -36,6 +37,7 @@ export default function ServiciosAdmin() {
   const [servicioGaleria, setServicioGaleria] = useState<ServicioGaleria[]>([])
   const [gestionLoading, setGestionLoading] = useState(false)
   const [uploadingGaleria, setUploadingGaleria] = useState(false)
+  const [uploadingCover, setUploadingCover] = useState(false)
 
   const supabase = createClient()
 
@@ -113,22 +115,34 @@ export default function ServiciosAdmin() {
     }
   }
 
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingCover(true)
+    const fd = new FormData()
+    fd.append('file', file)
+    const { error, url } = await uploadServicioCover(fd)
+    if (error || !url) { toast.error('Error al subir imagen'); setUploadingCover(false); return }
+    setForm((prev) => ({ ...prev, imagen_url: url }))
+    setUploadingCover(false)
+    toast.success('Imagen de portada subida')
+    e.target.value = ''
+  }
+
   // Gestionar: galeria per-service
   const handleGaleriaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? [])
     if (!files.length || !gestionServicio) return
     setUploadingGaleria(true)
     for (const file of files) {
-      const ext = file.name.split('.').pop()
-      const fileName = `${gestionServicio.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-      const { data, error } = await supabase.storage.from('servicios').upload(fileName, file, { upsert: false })
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('servicioId', gestionServicio.id)
+      fd.append('orden', String(servicioGaleria.length + 1))
+      fd.append('alt', gestionServicio.nombre)
+      const { error, item } = await uploadGaleriaImage(fd)
       if (error) { toast.error(`Error: ${file.name}`); continue }
-      const { data: { publicUrl } } = supabase.storage.from('servicios').getPublicUrl(data.path)
-      const orden = servicioGaleria.length + 1
-      const { data: inserted } = await supabase.from('servicio_galeria').insert({
-        servicio_id: gestionServicio.id, url: publicUrl, alt: gestionServicio.nombre, orden
-      }).select().single()
-      if (inserted) setServicioGaleria((prev) => [...prev, inserted as ServicioGaleria])
+      if (item) setServicioGaleria((prev) => [...prev, item as ServicioGaleria])
     }
     setUploadingGaleria(false)
     toast.success('Fotos subidas')
@@ -224,8 +238,17 @@ export default function ServiciosAdmin() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>URL de imagen (opcional)</Label>
-              <Input value={form.imagen_url} onChange={(e) => setForm({ ...form, imagen_url: e.target.value })} placeholder="https://..." />
+              <Label>Imagen de portada</Label>
+              <div className="flex items-center gap-3">
+                {form.imagen_url && (
+                  <Image src={form.imagen_url} alt="portada" width={56} height={56} className="rounded-lg object-cover h-14 w-14 shrink-0" />
+                )}
+                <label className="inline-flex items-center gap-2 cursor-pointer rounded-lg border border-border/60 px-3 py-1.5 text-sm hover:bg-muted transition-colors">
+                  {uploadingCover ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploadingCover ? 'Subiendo...' : form.imagen_url ? 'Cambiar imagen' : 'Subir imagen'}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
+                </label>
+              </div>
             </div>
           </div>
           <DialogFooter>

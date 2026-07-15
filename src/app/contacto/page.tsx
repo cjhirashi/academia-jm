@@ -20,7 +20,7 @@ async function getContacto(): Promise<Contacto | null> {
 export default async function ContactoPage() {
   const contacto = await getContacto()
   return (
-    <div className="min-h-screen bg-[#0F0D13] pt-24">
+    <div className="min-h-screen bg-[var(--m3-bg)] pt-24">
       <ContactoSection contacto={contacto ?? undefined} />
     </div>
   )

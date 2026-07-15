@@ -40,7 +40,6 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  /* M3 shape scale */
   --radius-xs:  4px;
   --radius-sm:  8px;
   --radius-md:  12px;
@@ -50,58 +49,60 @@
   --radius: 16px;
 }
 
+/* ── M3 Light ────────────────────────────────────────────── */
 :root {
-  /* M3 light surface scale */
   --background: #FFFBFF;
   --foreground: #1C1B1F;
-  --card: #FFFFFF;
+  --card: #F3EDF7;
   --card-foreground: #1C1B1F;
-  --popover: #FFFFFF;
+  --popover: #FFFBFF;
   --popover-foreground: #1C1B1F;
-  --primary: #6750A4;
+  --primary: #C2185B;
   --primary-foreground: #FFFFFF;
-  --secondary: #625B71;
+  --secondary: #0288D1;
   --secondary-foreground: #FFFFFF;
-  --muted: #F4EFF4;
+  --muted: #F7F2FA;
   --muted-foreground: #49454F;
-  --accent: #F4EFF4;
+  --accent: #F3EDF7;
   --accent-foreground: #1C1B1F;
   --destructive: #B3261E;
   --border: #CAC4D0;
   --input: #CAC4D0;
-  --ring: #6750A4;
-  --chart-1: #E91E8C;
-  --chart-2: #00BFFF;
+  --ring: #C2185B;
+  --chart-1: #C2185B;
+  --chart-2: #0288D1;
   --chart-3: #6750A4;
   --chart-4: #625B71;
   --chart-5: #7D5260;
   --radius: 16px;
-  --sidebar: #F4EFF4;
+  --sidebar: #F7F2FA;
   --sidebar-foreground: #1C1B1F;
-  --sidebar-primary: #E91E8C;
+  --sidebar-primary: #C2185B;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EAE7EC;
+  --sidebar-accent: #ECE6F0;
   --sidebar-accent-foreground: #1C1B1F;
   --sidebar-border: #CAC4D0;
-  --sidebar-ring: #E91E8C;
+  --sidebar-ring: #C2185B;
   /* Academia JM brand */
   --gold: #C2185B;
   --gold-light: #E91E8C;
   --blue-jm: #0288D1;
-  /* M3 surface containers */
-  --surface-dim: #DED8E1;
-  --surface-container-lowest: #FFFFFF;
-  --surface-container-low: #F7F2FA;
-  --surface-container: #F3EDF7;
-  --surface-container-high: #ECE6F0;
-  --surface-container-highest: #E6E0E9;
-  --on-surface-variant: #49454F;
-  --outline: #79747E;
-  --outline-variant: #CAC4D0;
+  /* M3 semantic surface tokens (used by components) */
+  --m3-bg:               #FFFBFF;
+  --m3-surface:          #F4EFF4;
+  --m3-surface-low:      #F7F2FA;
+  --m3-surface-container: #F3EDF7;
+  --m3-surface-high:     #ECE6F0;
+  --m3-surface-highest:  #E6E0E9;
+  --m3-on-surface:       #1C1B1F;
+  --m3-on-surface-v:     #49454F;
+  --m3-outline:          #79747E;
+  --m3-outline-v:        #CAC4D0;
+  --m3-nav-bg:           #F3EDF7;
 }
 
+/* ── M3 Dark ─────────────────────────────────────────────── */
 .dark {
-  /* M3 dark surface scale — signature purple-tinted dark */
   --background: #0F0D13;
   --foreground: #E6E0E9;
   --card: #211F26;
@@ -137,35 +138,28 @@
   --gold: #E91E8C;
   --gold-light: #FF61C0;
   --blue-jm: #00BFFF;
-  /* M3 dark surface containers */
-  --surface-dim: #141218;
-  --surface-container-lowest: #0F0D13;
-  --surface-container-low: #1D1B20;
-  --surface-container: #211F26;
-  --surface-container-high: #2B2930;
-  --surface-container-highest: #36343B;
-  --on-surface-variant: #CAC4D0;
-  --outline: #938F99;
-  --outline-variant: #49454F;
+  /* M3 semantic surface tokens */
+  --m3-bg:               #0F0D13;
+  --m3-surface:          #141218;
+  --m3-surface-low:      #1D1B20;
+  --m3-surface-container: #211F26;
+  --m3-surface-high:     #2B2930;
+  --m3-surface-highest:  #36343B;
+  --m3-on-surface:       #E6E0E9;
+  --m3-on-surface-v:     #CAC4D0;
+  --m3-outline:          #938F99;
+  --m3-outline-v:        #49454F;
+  --m3-nav-bg:           #1D1B20;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  html { @apply font-sans; }
 }
 
 /* M3 State layer */
-.m3-state-layer {
-  position: relative;
-  overflow: hidden;
-}
+.m3-state-layer { position: relative; overflow: hidden; }
 .m3-state-layer::after {
   content: '';
   position: absolute;
@@ -179,3 +173,7 @@
 .m3-state-layer:hover::after { opacity: 0.08; }
 .m3-state-layer:focus-visible::after { opacity: 0.12; }
 .m3-state-layer:active::after { opacity: 0.12; }
+
+/* Google Maps dark mode flip — only in dark theme */
+.map-iframe { filter: none; }
+.dark .map-iframe { filter: invert(90%) hue-rotate(180deg); }

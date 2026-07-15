@@ -10,9 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Contacto } from '@/lib/types'
+import { guardarContacto } from './actions'
 
 const defaultForm: Omit<Contacto, 'id'> = {
-  telefono: '', whatsapp: '', email: '', direccion: '', horario_atencion: '', facebook_url: '', instagram_url: '',
+  telefono: '', whatsapp: '', email: '', direccion: '', horario_atencion: '',
+  facebook_url: '', instagram_url: '', mapa_embed_url: '',
 }
 
 export default function ContactoAdmin() {
@@ -23,22 +25,42 @@ export default function ContactoAdmin() {
 
   useEffect(() => {
     supabase.from('contacto').select('*').eq('id', 1).single().then(({ data }) => {
-      if (data) setForm({ telefono: data.telefono ?? '', whatsapp: data.whatsapp ?? '', email: data.email ?? '', direccion: data.direccion ?? '', horario_atencion: data.horario_atencion ?? '', facebook_url: data.facebook_url ?? '', instagram_url: data.instagram_url ?? '' })
+      if (data) setForm({
+        telefono: data.telefono ?? '',
+        whatsapp: data.whatsapp ?? '',
+        email: data.email ?? '',
+        direccion: data.direccion ?? '',
+        horario_atencion: data.horario_atencion ?? '',
+        facebook_url: data.facebook_url ?? '',
+        instagram_url: data.instagram_url ?? '',
+        mapa_embed_url: data.mapa_embed_url ?? '',
+      })
       setLoading(false)
     })
-  }, [supabase])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSave = async () => {
     setSaving(true)
-    const { error } = await supabase.from('contacto').upsert({ id: 1, ...form })
-    if (error) { toast.error('Error al guardar'); setSaving(false); return }
+    const { error } = await guardarContacto({
+      telefono: form.telefono ?? '',
+      whatsapp: form.whatsapp ?? '',
+      email: form.email ?? '',
+      direccion: form.direccion ?? '',
+      horario_atencion: form.horario_atencion ?? '',
+      facebook_url: form.facebook_url ?? '',
+      instagram_url: form.instagram_url ?? '',
+      mapa_embed_url: form.mapa_embed_url ?? '',
+    })
+    if (error) { toast.error(`Error al guardar: ${error}`); setSaving(false); return }
     toast.success('Información de contacto actualizada')
     setSaving(false)
   }
 
   const f = (key: keyof typeof form) => ({
     value: form[key] ?? '',
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setForm({ ...form, [key]: e.target.value }),
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm({ ...form, [key]: e.target.value }),
   })
 
   if (loading) return <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
@@ -74,6 +96,23 @@ export default function ContactoAdmin() {
           <div className="space-y-2">
             <Label>Horario de atención</Label>
             <Input {...f('horario_atencion')} placeholder="Lun-Vie: 7:00-21:00 | Sáb: 9:00-14:00" />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle className="text-base">Mapa</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>URL de embed de Google Maps</Label>
+            <Textarea
+              {...f('mapa_embed_url')}
+              rows={3}
+              placeholder="https://www.google.com/maps/embed?pb=..."
+            />
+            <p className="text-xs text-muted-foreground">
+              En Google Maps: Compartir → Insertar un mapa → copia la URL del atributo <code>src</code> del iframe.
+            </p>
           </div>
         </CardContent>
       </Card>

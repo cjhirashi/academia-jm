@@ -60,6 +60,7 @@ export type Contacto = {
   horario_atencion: string | null
   facebook_url: string | null
   instagram_url: string | null
+  mapa_embed_url: string | null
 }
 
 export const DIAS_SEMANA = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']

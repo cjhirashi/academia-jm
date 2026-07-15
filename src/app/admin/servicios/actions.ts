@@ -61,3 +61,49 @@ export async function eliminarGaleriaItem(id: string) {
   if (error) return { error: error.message }
   return { error: null }
 }
+
+export async function uploadServicioCover(formData: FormData) {
+  const file = formData.get('file') as File
+  if (!file) return { error: 'No file', url: null }
+
+  const supabase = createAdminClient()
+  const ext = file.name.split('.').pop()
+  const fileName = `covers/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+  const bytes = await file.arrayBuffer()
+  const { data, error } = await supabase.storage.from('servicios').upload(fileName, bytes, {
+    contentType: file.type,
+    upsert: false,
+  })
+  if (error) return { error: error.message, url: null }
+
+  const { data: { publicUrl } } = supabase.storage.from('servicios').getPublicUrl(data.path)
+  return { error: null, url: publicUrl }
+}
+
+export async function uploadGaleriaImage(formData: FormData) {
+  const file = formData.get('file') as File
+  const servicioId = formData.get('servicioId') as string
+  const orden = Number(formData.get('orden'))
+  const alt = formData.get('alt') as string
+
+  if (!file || !servicioId) return { error: 'Missing data', item: null }
+
+  const supabase = createAdminClient()
+  const ext = file.name.split('.').pop()
+  const fileName = `${servicioId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+  const bytes = await file.arrayBuffer()
+  const { data, error } = await supabase.storage.from('servicios').upload(fileName, bytes, {
+    contentType: file.type,
+    upsert: false,
+  })
+  if (error) return { error: error.message, item: null }
+
+  const { data: { publicUrl } } = supabase.storage.from('servicios').getPublicUrl(data.path)
+  const { data: inserted } = await supabase.from('servicio_galeria').insert({
+    servicio_id: servicioId, url: publicUrl, alt, orden,
+  }).select().single()
+
+  return { error: null, item: inserted }
+}

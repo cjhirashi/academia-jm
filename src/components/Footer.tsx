@@ -18,14 +18,14 @@ export async function Footer() {
   const contacto = await getContacto()
 
   return (
-    <footer className="bg-[#1D1B20] border-t border-[#49454F]">
+    <footer className="bg-[var(--m3-surface-low)] border-t border-[var(--m3-outline-v)]">
       <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Brand */}
         <div className="space-y-3">
-          <span className="font-[family-name:var(--font-script)] text-xl text-[#E6E0E9]">
+          <span className="font-[family-name:var(--font-script)] text-xl text-[var(--m3-on-surface)]">
             Academia JM
           </span>
-          <p className="text-[12px] leading-[16px] tracking-[0.4px] text-[#938F99] max-w-xs">
+          <p className="text-[12px] leading-[16px] tracking-[0.4px] text-[var(--m3-outline)] max-w-xs">
             Academia dedicada al aprendizaje físico, artístico y espiritual.<br />
             Aprende · Diviértete · Olvida tu estrés
           </p>
@@ -34,7 +34,7 @@ export async function Footer() {
 
         {/* Navigation */}
         <div className="space-y-3">
-          <p className="text-[11px] font-medium tracking-[0.5px] uppercase text-[#938F99]">Navegación</p>
+          <p className="text-[11px] font-medium tracking-[0.5px] uppercase text-[var(--m3-outline)]">Navegación</p>
           <ul className="space-y-2">
             {[
               { href: '/', label: 'Inicio' },
@@ -43,7 +43,7 @@ export async function Footer() {
               { href: '/contacto', label: 'Contacto' },
             ].map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0] hover:text-[var(--gold)] transition-colors">
+                <Link href={l.href} className="text-[14px] leading-[20px] tracking-[0.25px] text-[var(--m3-on-surface-v)] hover:text-[var(--gold)] transition-colors">
                   {l.label}
                 </Link>
               </li>
@@ -53,21 +53,21 @@ export async function Footer() {
 
         {/* Contact */}
         <div className="space-y-3">
-          <p className="text-[11px] font-medium tracking-[0.5px] uppercase text-[#938F99]">Contacto</p>
+          <p className="text-[11px] font-medium tracking-[0.5px] uppercase text-[var(--m3-outline)]">Contacto</p>
           {!contacto ? (
-            <p className="text-[12px] text-[#938F99]">Próximamente...</p>
+            <p className="text-[12px] text-[var(--m3-outline)]">Próximamente...</p>
           ) : (
             <ul className="space-y-3">
               {contacto.direccion && (
                 <li className="flex items-start gap-3">
                   <MapPin className="h-4 w-4 shrink-0 text-[var(--gold)]/60 mt-0.5" />
-                  <span className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0]">{contacto.direccion}</span>
+                  <span className="text-[14px] leading-[20px] tracking-[0.25px] text-[var(--m3-on-surface-v)]">{contacto.direccion}</span>
                 </li>
               )}
               {contacto.telefono && (
                 <li className="flex items-center gap-3">
                   <Phone className="h-4 w-4 shrink-0 text-[var(--gold)]/60" />
-                  <a href={`tel:${contacto.telefono.replace(/\s/g, '')}`} className="text-[14px] leading-[20px] text-[#CAC4D0] hover:text-[var(--gold)] transition-colors">
+                  <a href={`tel:${contacto.telefono.replace(/\s/g, '')}`} className="text-[14px] leading-[20px] text-[var(--m3-on-surface-v)] hover:text-[var(--gold)] transition-colors">
                     {contacto.telefono}
                   </a>
                 </li>
@@ -77,7 +77,7 @@ export async function Footer() {
                   <svg className="h-4 w-4 shrink-0 text-[var(--gold)]/60" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                   </svg>
-                  <a href={contacto.facebook_url} target="_blank" rel="noopener noreferrer" className="text-[14px] text-[#CAC4D0] hover:text-[var(--gold)] transition-colors">
+                  <a href={contacto.facebook_url} target="_blank" rel="noopener noreferrer" className="text-[14px] text-[var(--m3-on-surface-v)] hover:text-[var(--gold)] transition-colors">
                     Facebook
                   </a>
                 </li>
@@ -87,9 +87,8 @@ export async function Footer() {
         </div>
       </div>
 
-      {/* M3 Divider + copyright */}
-      <div className="border-t border-[#49454F] py-4 text-center">
-        <p className="text-[11px] font-medium tracking-[0.5px] text-[#938F99] uppercase">
+      <div className="border-t border-[var(--m3-outline-v)] py-4 text-center">
+        <p className="text-[11px] font-medium tracking-[0.5px] text-[var(--m3-outline)] uppercase">
           © {new Date().getFullYear()} Academia JM · Todos los derechos reservados
         </p>
       </div>

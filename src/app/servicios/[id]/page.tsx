@@ -65,7 +65,7 @@ export default async function ServicioDetallePage({ params }: { params: Promise<
         {servicio.imagen_url ? (
           <Image src={servicio.imagen_url} alt={servicio.nombre} fill className="object-cover" />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0D0D0D] via-[#1a0a2e] to-[#0D0D0D] flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--m3-bg)] via-[var(--m3-surface-container)] to-[var(--m3-bg)] flex items-center justify-center">
             <div className="text-[var(--gold)]/40">
               {servicio.icono && iconMap[servicio.icono] ? iconMap[servicio.icono] : <Music className="h-12 w-12" />}
             </div>

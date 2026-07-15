@@ -39,22 +39,21 @@ export default async function ServiciosPage() {
   const [servicios, profesores] = await Promise.all([getServicios(), getProfesores()])
 
   return (
-    <div className="min-h-screen bg-[#0F0D13]">
+    <div className="min-h-screen bg-[var(--m3-bg)]">
       {/* M3 Hero */}
       <section className="pt-32 pb-16 px-4">
         <div className="max-w-6xl mx-auto">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Academia JM</p>
-          <h1 className="text-[45px] md:text-[57px] font-normal leading-[52px] md:leading-[64px] text-[#E6E0E9] mb-4">
+          <h1 className="text-[45px] md:text-[57px] font-normal leading-[52px] md:leading-[64px] text-[var(--m3-on-surface)] mb-4">
             Nuestros Servicios
           </h1>
-          <p className="text-[16px] leading-[24px] tracking-[0.5px] text-[#CAC4D0] max-w-xl">
+          <p className="text-[16px] leading-[24px] tracking-[0.5px] text-[var(--m3-on-surface-v)] max-w-xl">
             Descubre todas las disciplinas que ofrecemos. Cada clase está diseñada para que disfrutes, aprendas y te superes.
           </p>
         </div>
       </section>
 
-      {/* M3 Divider */}
-      <div className="h-px bg-[#49454F] mx-4" />
+      <div className="h-px bg-[var(--m3-outline-v)] mx-4" />
 
       {/* Grid de servicios */}
       <section className="py-16 px-4">
@@ -66,17 +65,17 @@ export default async function ServiciosPage() {
               ))}
             </div>
           ) : (
-            <p className="text-[#938F99] text-[14px] py-8">Próximamente...</p>
+            <p className="text-[var(--m3-outline)] text-[14px] py-8">Próximamente...</p>
           )}
         </div>
       </section>
 
       {/* Instructores */}
-      <section className="py-16 px-4 bg-[#141218]">
+      <section className="py-16 px-4 bg-[var(--m3-surface)]">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10">
             <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Equipo</p>
-            <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9]">Nuestros instructores</h2>
+            <h2 className="text-[32px] font-normal leading-[40px] text-[var(--m3-on-surface)]">Nuestros instructores</h2>
           </div>
 
           {profesores.length > 0 ? (
@@ -84,7 +83,7 @@ export default async function ServiciosPage() {
               {profesores.map((p) => <ProfesorCard key={p.id} profesor={p} />)}
             </div>
           ) : (
-            <p className="text-[#938F99] text-[14px]">Próximamente...</p>
+            <p className="text-[var(--m3-outline)] text-[14px]">Próximamente...</p>
           )}
         </div>
       </section>
@@ -98,9 +97,9 @@ function ServicioCardLink({ servicio, index }: { servicio: Servicio; index: numb
   return (
     <Link
       href={href}
-      className="group block bg-[#211F26] rounded-[28px] overflow-hidden hover:bg-[#2B2930] transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.3),0_2px_6px_2px_rgba(0,0,0,0.15)]"
+      className="group block bg-[var(--m3-surface-container)] rounded-[28px] overflow-hidden hover:bg-[var(--m3-surface-high)] transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.15),0_2px_6px_2px_rgba(0,0,0,0.08)]"
     >
-      <div className="relative h-48 bg-[#2B2930] flex items-center justify-center overflow-hidden">
+      <div className="relative h-48 bg-[var(--m3-surface-high)] flex items-center justify-center overflow-hidden">
         {servicio.imagen_url ? (
           <Image src={servicio.imagen_url} alt={servicio.nombre} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
@@ -108,12 +107,12 @@ function ServicioCardLink({ servicio, index }: { servicio: Servicio; index: numb
             {servicio.icono && iconMap[servicio.icono] ? iconMap[servicio.icono] : <Music className="h-8 w-8" />}
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#211F26] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--m3-surface-container)] via-transparent to-transparent" />
       </div>
       <div className="p-6">
-        <h2 className="text-[22px] font-normal leading-[28px] text-[#E6E0E9] mb-2 group-hover:text-[var(--gold)] transition-colors">{servicio.nombre}</h2>
+        <h2 className="text-[22px] font-normal leading-[28px] text-[var(--m3-on-surface)] mb-2 group-hover:text-[var(--gold)] transition-colors">{servicio.nombre}</h2>
         {servicio.descripcion && (
-          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0] line-clamp-2 mb-4">{servicio.descripcion}</p>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[var(--m3-on-surface-v)] line-clamp-2 mb-4">{servicio.descripcion}</p>
         )}
         <div className="inline-flex items-center gap-1 text-[14px] font-medium text-[var(--gold)]">
           Ver más <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -125,8 +124,8 @@ function ServicioCardLink({ servicio, index }: { servicio: Servicio; index: numb
 
 function ProfesorCard({ profesor }: { profesor: Profesor }) {
   return (
-    <div className="bg-[#211F26] rounded-[28px] overflow-hidden border border-[#49454F] hover:border-[var(--gold)]/40 transition-colors">
-      <div className="relative h-56 bg-[#2B2930] flex items-center justify-center">
+    <div className="bg-[var(--m3-surface-container)] rounded-[28px] overflow-hidden border border-[var(--m3-outline-v)] hover:border-[var(--gold)]/40 transition-colors">
+      <div className="relative h-56 bg-[var(--m3-surface-high)] flex items-center justify-center">
         {profesor.foto_url ? (
           <Image src={profesor.foto_url} alt={profesor.nombre} fill className="object-cover object-top" />
         ) : (
@@ -134,15 +133,15 @@ function ProfesorCard({ profesor }: { profesor: Profesor }) {
             <span className="text-[28px] font-medium text-[var(--gold)]">{profesor.nombre.charAt(0)}</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#211F26] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--m3-surface-container)] via-transparent to-transparent" />
       </div>
       <div className="p-6">
-        <h3 className="text-[22px] font-normal leading-[28px] text-[#E6E0E9] mb-1">{profesor.nombre}</h3>
+        <h3 className="text-[22px] font-normal leading-[28px] text-[var(--m3-on-surface)] mb-1">{profesor.nombre}</h3>
         {profesor.especialidad && (
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">{profesor.especialidad}</p>
         )}
         {profesor.bio && (
-          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0]">{profesor.bio}</p>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[var(--m3-on-surface-v)]">{profesor.bio}</p>
         )}
       </div>
     </div>

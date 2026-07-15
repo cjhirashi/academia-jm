@@ -13,6 +13,7 @@ import { Plus, Pencil, Trash2, Loader2, Upload } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import type { Profesor } from '@/lib/types'
+import { crearProfesor, actualizarProfesor, eliminarProfesor, toggleActivoProfesor, uploadProfesorFoto } from './actions'
 
 const defaultForm = { nombre: '', especialidad: '', bio: '', foto_url: '', orden: 0, activo: true }
 
@@ -45,14 +46,14 @@ export default function ProfesoresAdmin() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const ext = file.name.split('.').pop()
-    const fileName = `prof-${Date.now()}.${ext}`
-    const { data, error } = await supabase.storage.from('servicios').upload(`profesores/${fileName}`, file, { upsert: false })
-    if (error) { toast.error('Error al subir foto'); setUploading(false); return }
-    const { data: { publicUrl } } = supabase.storage.from('servicios').getPublicUrl(data.path)
-    setForm((prev) => ({ ...prev, foto_url: publicUrl }))
+    const fd = new FormData()
+    fd.append('file', file)
+    const { error, url } = await uploadProfesorFoto(fd)
+    if (error || !url) { toast.error('Error al subir foto'); setUploading(false); return }
+    setForm((prev) => ({ ...prev, foto_url: url }))
     setUploading(false)
     toast.success('Foto subida')
+    e.target.value = ''
   }
 
   const handleSave = async () => {
@@ -66,12 +67,12 @@ export default function ProfesoresAdmin() {
       activo: form.activo,
     }
     if (editId) {
-      const { error } = await supabase.from('profesores').update(payload).eq('id', editId)
-      if (error) { toast.error('Error al actualizar'); setSaving(false); return }
+      const { error } = await actualizarProfesor(editId, payload)
+      if (error) { toast.error(`Error al actualizar: ${error}`); setSaving(false); return }
       toast.success('Profesor actualizado')
     } else {
-      const { error } = await supabase.from('profesores').insert(payload)
-      if (error) { toast.error('Error al crear'); setSaving(false); return }
+      const { error } = await crearProfesor(payload)
+      if (error) { toast.error(`Error al crear: ${error}`); setSaving(false); return }
       toast.success('Profesor creado')
     }
     setOpen(false); setSaving(false); fetchProfesores()
@@ -79,12 +80,13 @@ export default function ProfesoresAdmin() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('¿Eliminar este profesor?')) return
-    await supabase.from('profesores').delete().eq('id', id)
+    const { error } = await eliminarProfesor(id)
+    if (error) { toast.error(`Error: ${error}`); return }
     toast.success('Eliminado'); fetchProfesores()
   }
 
-  const toggleActivo = async (p: Profesor) => {
-    await supabase.from('profesores').update({ activo: !p.activo }).eq('id', p.id)
+  const handleToggleActivo = async (p: Profesor) => {
+    await toggleActivoProfesor(p.id, !p.activo)
     fetchProfesores()
   }
 
@@ -130,7 +132,7 @@ export default function ProfesoresAdmin() {
                   <TableCell className="text-muted-foreground text-sm">{p.especialidad ?? '—'}</TableCell>
                   <TableCell>{p.orden}</TableCell>
                   <TableCell>
-                    <Badge variant={p.activo ? 'default' : 'secondary'} className="cursor-pointer" onClick={() => toggleActivo(p)}>
+                    <Badge variant={p.activo ? 'default' : 'secondary'} className="cursor-pointer" onClick={() => handleToggleActivo(p)}>
                       {p.activo ? 'Activo' : 'Inactivo'}
                     </Badge>
                   </TableCell>
@@ -165,6 +167,7 @@ export default function ProfesoresAdmin() {
                   {uploading ? 'Subiendo...' : 'Subir foto'}
                   <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
                 </label>
+                <p className="text-xs text-muted-foreground mt-1">Se sube al bucket &quot;profesores&quot;</p>
               </div>
             </div>
 

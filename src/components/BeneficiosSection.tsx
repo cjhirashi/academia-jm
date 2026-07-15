@@ -28,12 +28,11 @@ const beneficios = [
 
 export function BeneficiosSection() {
   return (
-    <section className="py-20 px-4 bg-[#141218]">
+    <section className="py-20 px-4 bg-[var(--m3-surface)]">
       <div className="mx-auto max-w-6xl">
-        {/* M3 section header */}
         <div className="text-center mb-12">
           <p className="text-[12px] font-medium tracking-[0.5px] uppercase text-[var(--gold)] mb-3">Por qué elegirnos</p>
-          <h2 className="text-[32px] font-normal leading-[40px] text-[#E6E0E9]">Tu mejor decisión</h2>
+          <h2 className="text-[32px] font-normal leading-[40px] text-[var(--m3-on-surface)]">Tu mejor decisión</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -44,17 +43,15 @@ export function BeneficiosSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              /* M3 Outlined Card */
-              className="p-6 rounded-[16px] border border-[#49454F] bg-transparent hover:bg-[#211F26]/60 transition-colors"
+              className="p-6 rounded-[16px] border border-[var(--m3-outline-v)] bg-transparent hover:bg-[var(--m3-surface-container)]/60 transition-colors"
             >
-              {/* M3 Icon in primary container */}
               <div className="w-12 h-12 rounded-full bg-[var(--gold)]/12 flex items-center justify-center mb-4">
                 <b.icon className="h-5 w-5 text-[var(--gold)]" />
               </div>
-              <h3 className="text-[16px] font-medium leading-[24px] tracking-[0.15px] text-[#E6E0E9] mb-2">
+              <h3 className="text-[16px] font-medium leading-[24px] tracking-[0.15px] text-[var(--m3-on-surface)] mb-2">
                 {b.titulo}
               </h3>
-              <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[#CAC4D0]">
+              <p className="text-[14px] leading-[20px] tracking-[0.25px] text-[var(--m3-on-surface-v)]">
                 {b.desc}
               </p>
             </motion.div>
