@@ -167,44 +167,73 @@ export default function ServiciosAdmin() {
 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+      ) : servicios.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border/60 p-12 text-center text-muted-foreground text-sm">
+          Sin servicios. Crea uno nuevo.
+        </div>
       ) : (
-        <div className="rounded-xl border border-border/60 overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Ícono</TableHead>
-                <TableHead>Orden</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {servicios.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Sin servicios. Crea uno nuevo.</TableCell></TableRow>
-              )}
-              {servicios.map((s) => (
-                <TableRow key={s.id}>
-                  <TableCell className="font-medium">{s.nombre}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">{s.icono}</TableCell>
-                  <TableCell>{s.orden}</TableCell>
-                  <TableCell>
-                    <Badge variant={s.activo ? 'default' : 'secondary'} className="cursor-pointer" onClick={() => toggleActivo(s)}>
+        <>
+          {/* Móvil: tarjetas */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {servicios.map((s) => (
+              <div key={s.id} className="rounded-xl border border-border/60 bg-card p-4 flex items-center gap-3">
+                {s.imagen_url && (
+                  <Image src={s.imagen_url} alt={s.nombre} width={48} height={48} className="rounded-lg object-cover h-12 w-12 shrink-0" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm truncate">{s.nombre}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant={s.activo ? 'default' : 'secondary'} className="cursor-pointer text-xs" onClick={() => toggleActivo(s)}>
                       {s.activo ? 'Activo' : 'Inactivo'}
                     </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" title="Profesores y galería" onClick={() => openGestion(s)}><Settings className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Pencil className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(s.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                    </div>
-                  </TableCell>
+                    <span className="text-xs text-muted-foreground">#{s.orden}</span>
+                  </div>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" title="Profesores y galería" onClick={() => openGestion(s)}><Settings className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s)}><Pencil className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(s.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: tabla */}
+          <div className="hidden md:block rounded-xl border border-border/60 overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Ícono</TableHead>
+                  <TableHead>Orden</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {servicios.map((s) => (
+                  <TableRow key={s.id}>
+                    <TableCell className="font-medium">{s.nombre}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{s.icono}</TableCell>
+                    <TableCell>{s.orden}</TableCell>
+                    <TableCell>
+                      <Badge variant={s.activo ? 'default' : 'secondary'} className="cursor-pointer" onClick={() => toggleActivo(s)}>
+                        {s.activo ? 'Activo' : 'Inactivo'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon" title="Profesores y galería" onClick={() => openGestion(s)}><Settings className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Pencil className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(s.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Dialog: Crear / Editar servicio */}
