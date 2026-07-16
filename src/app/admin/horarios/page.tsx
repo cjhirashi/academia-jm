@@ -11,6 +11,7 @@ import { Loader2, Trash2, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { DIAS_SEMANA, COLORES_SERVICIO } from '@/lib/types'
 import type { Horario, Servicio } from '@/lib/types'
+import { crearHorario, eliminarHorario } from './actions'
 
 const HORAS = ['07:00', '08:00', '09:00', '10:00', '11:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00']
 
@@ -49,20 +50,22 @@ export default function HorariosAdmin() {
   })
 
   const handleSave = async () => {
+    if (!form.servicio_id) { toast.error('Selecciona una clase'); return }
     setSaving(true)
-    const { error } = await supabase.from('horarios').insert({
+    const { error } = await crearHorario({
       servicio_id: form.servicio_id,
       dia_semana: Number(form.dia_semana),
       hora_inicio: form.hora_inicio + ':00',
       hora_fin: form.hora_fin + ':00',
       salon: form.salon || null,
     })
-    if (error) { toast.error('Error al guardar'); setSaving(false); return }
+    if (error) { toast.error(`Error: ${error}`); setSaving(false); return }
     toast.success('Horario agregado'); setOpen(false); setSaving(false); fetchData()
   }
 
   const handleDelete = async (id: string) => {
-    await supabase.from('horarios').delete().eq('id', id)
+    const { error } = await eliminarHorario(id)
+    if (error) { toast.error(error); return }
     toast.success('Eliminado'); fetchData()
   }
 
@@ -127,8 +130,16 @@ export default function HorariosAdmin() {
             <div className="space-y-2">
               <Label>Clase</Label>
               <Select value={form.servicio_id} onValueChange={(v) => setForm((prev) => ({ ...prev, servicio_id: v ?? '' }))}>
-                <SelectTrigger><SelectValue placeholder="Selecciona una clase" /></SelectTrigger>
-                <SelectContent>{servicios.map((s) => <SelectItem key={s.id} value={s.id as string}>{s.nombre}</SelectItem>)}</SelectContent>
+                <SelectTrigger>
+                  <span className={form.servicio_id ? 'text-foreground' : 'text-muted-foreground'}>
+                    {servicios.find(s => s.id === form.servicio_id)?.nombre ?? 'Selecciona una clase'}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  {servicios.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
