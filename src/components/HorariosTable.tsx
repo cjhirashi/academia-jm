@@ -1,27 +1,41 @@
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { DIAS_SEMANA, COLORES_SERVICIO } from '@/lib/types'
-import type { Horario, Servicio, Profesor } from '@/lib/types'
+import type { Servicio, Profesor } from '@/lib/types'
 
 const HORAS = ['07:00', '08:00', '09:00', '10:00', '11:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00']
 
-type HorarioFull = Horario & { servicio: Servicio; profesor: Profesor | null }
+type HorarioFull = {
+  id: string
+  servicio_id: string | null
+  dia_semana: number
+  hora_inicio: string
+  hora_fin: string
+  salon: string | null
+  servicio: Servicio | null
+  profesores: Profesor[]
+}
 
-async function getHorarios() {
+async function getHorarios(): Promise<HorarioFull[]> {
   if (!isSupabaseConfigured()) return []
   try {
     const supabase = await createClient()
     const { data, error } = await supabase
       .from('horarios')
-      .select('*, servicio:servicios(*), profesor:profesores(*)')
+      .select('*, servicio:servicios(*), horario_profesores(profesor:profesores(*))')
       .order('hora_inicio')
     if (error) return []
-    return (data ?? []) as HorarioFull[]
+    return (data ?? []).map((row: Record<string, unknown>) => ({
+      ...row,
+      profesores: ((row.horario_profesores as { profesor: Profesor }[]) ?? [])
+        .map((hp) => hp.profesor)
+        .filter(Boolean),
+    })) as HorarioFull[]
   } catch {
     return []
   }
 }
 
-function horaLabel(time: string) { return time.substring(0, 5) }
+function horaLabel(t: string) { return t.substring(0, 5) }
 
 export async function HorariosTable({ preview = false }: { preview?: boolean }) {
   const horarios = await getHorarios()
@@ -64,18 +78,18 @@ export async function HorariosTable({ preview = false }: { preview?: boolean }) 
                 const clases = mapa[hora]?.[dia] ?? []
                 return (
                   <td key={dia} className="px-1 py-1.5 text-center align-top">
-                    <div className="flex flex-col gap-1 items-center">
+                    <div className="flex flex-col gap-1.5 items-center">
                       {clases.map((c) => (
-                        <div key={c.id} className="text-left">
+                        <div key={c.id}>
                           <span
                             className={`inline-block rounded-full px-3 py-1 text-[11px] font-medium text-white ${colorMap[c.servicio?.nombre ?? ''] ?? 'bg-[#36343B]'}`}
                             title={c.salon ?? ''}
                           >
                             {c.servicio?.nombre ?? '—'}
                           </span>
-                          {c.profesor && (
-                            <p className="text-[10px] text-[var(--m3-on-surface-v)] mt-0.5 leading-tight text-center">
-                              {c.profesor.nombre.split(' ').slice(0, 2).join(' ')}
+                          {c.profesores.length > 0 && (
+                            <p className="text-[10px] text-[var(--m3-on-surface-v)] mt-0.5 leading-tight">
+                              {c.profesores.map((p) => p.nombre.split(' ')[0]).join(', ')}
                             </p>
                           )}
                         </div>
