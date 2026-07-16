@@ -10,38 +10,48 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Trash2, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { DIAS_SEMANA, COLORES_SERVICIO } from '@/lib/types'
-import type { Horario, Servicio } from '@/lib/types'
+import type { Horario, Servicio, Profesor } from '@/lib/types'
 import { crearHorario, eliminarHorario } from './actions'
 
 const HORAS = ['07:00', '08:00', '09:00', '10:00', '11:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00']
 
+type HorarioFull = Horario & { servicio: Servicio; profesor: Profesor | null }
+
 export default function HorariosAdmin() {
-  const [horarios, setHorarios] = useState<(Horario & { servicio: Servicio })[]>([])
+  const [horarios, setHorarios] = useState<HorarioFull[]>([])
   const [servicios, setServicios] = useState<Servicio[]>([])
+  const [profesores, setProfesores] = useState<Profesor[]>([])
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [form, setForm] = useState<{ servicio_id: string; dia_semana: string; hora_inicio: string; hora_fin: string; salon: string }>({ servicio_id: '', dia_semana: '1', hora_inicio: '09:00', hora_fin: '10:00', salon: '' })
+  const [form, setForm] = useState({
+    servicio_id: '',
+    profesor_id: '',
+    dia_semana: '1',
+    hora_inicio: '09:00',
+    hora_fin: '10:00',
+    salon: '',
+  })
   const supabase = createClient()
 
   const fetchData = useCallback(async () => {
-    const [h, s] = await Promise.all([
-      supabase.from('horarios').select('*, servicio:servicios(*)').order('hora_inicio'),
+    const [h, s, p] = await Promise.all([
+      supabase.from('horarios').select('*, servicio:servicios(*), profesor:profesores(*)').order('hora_inicio'),
       supabase.from('servicios').select('*').eq('activo', true).order('orden'),
+      supabase.from('profesores').select('*').eq('activo', true).order('orden'),
     ])
-    setHorarios((h.data ?? []) as (Horario & { servicio: Servicio })[])
+    setHorarios((h.data ?? []) as HorarioFull[])
     setServicios(s.data ?? [])
+    setProfesores(p.data ?? [])
     setLoading(false)
   }, [supabase])
 
   useEffect(() => { fetchData() }, [fetchData])
 
-  // Color map
   const colorMap: Record<string, string> = {}
   servicios.forEach((s, i) => { colorMap[s.id] = COLORES_SERVICIO[i % COLORES_SERVICIO.length] })
 
-  // Mapa grilla
-  const mapa: Record<string, Record<number, (Horario & { servicio: Servicio })[]>> = {}
+  const mapa: Record<string, Record<number, HorarioFull[]>> = {}
   horarios.forEach((h) => {
     const hora = h.hora_inicio.substring(0, 5)
     if (!mapa[hora]) mapa[hora] = {}
@@ -49,11 +59,24 @@ export default function HorariosAdmin() {
     mapa[hora][h.dia_semana].push(h)
   })
 
+  const openDialog = () => {
+    setForm({
+      servicio_id: servicios[0]?.id ?? '',
+      profesor_id: '',
+      dia_semana: '1',
+      hora_inicio: '09:00',
+      hora_fin: '10:00',
+      salon: '',
+    })
+    setOpen(true)
+  }
+
   const handleSave = async () => {
     if (!form.servicio_id) { toast.error('Selecciona una clase'); return }
     setSaving(true)
     const { error } = await crearHorario({
       servicio_id: form.servicio_id,
+      profesor_id: form.profesor_id || null,
       dia_semana: Number(form.dia_semana),
       hora_inicio: form.hora_inicio + ':00',
       hora_fin: form.hora_fin + ':00',
@@ -74,9 +97,9 @@ export default function HorariosAdmin() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black">Horarios</h1>
-          <p className="text-sm text-muted-foreground mt-1">Edita la grilla semanal de clases</p>
+          <p className="text-sm text-muted-foreground mt-1">Grilla semanal — clases y profesores</p>
         </div>
-        <Button onClick={() => { setForm({ servicio_id: String(servicios[0]?.id ?? ''), dia_semana: '1', hora_inicio: '09:00', hora_fin: '10:00', salon: '' }); setOpen(true) }}>
+        <Button onClick={openDialog}>
           <Plus className="mr-2 h-4 w-4" />Agregar horario
         </Button>
       </div>
@@ -102,17 +125,26 @@ export default function HorariosAdmin() {
                     const dia = diaIdx + 1
                     const clases = mapa[hora]?.[dia] ?? []
                     return (
-                      <td key={dia} className="px-1 py-1.5 text-center">
-                        {clases.map((c) => (
-                          <div key={c.id} className="inline-flex items-center gap-1">
-                            <span className={`inline-block rounded-md px-2 py-1 text-xs font-semibold text-white ${colorMap[c.servicio_id ?? ''] ?? 'bg-gray-500'}`}>
-                              {c.servicio?.nombre ?? '—'}
-                            </span>
-                            <button onClick={() => handleDelete(c.id)} className="text-muted-foreground hover:text-destructive">
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          </div>
-                        ))}
+                      <td key={dia} className="px-1 py-1.5 text-center align-top">
+                        <div className="flex flex-col gap-1 items-center">
+                          {clases.map((c) => (
+                            <div key={c.id} className="flex items-start gap-1">
+                              <div className="text-left">
+                                <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-semibold text-white ${colorMap[c.servicio_id ?? ''] ?? 'bg-gray-500'}`}>
+                                  {c.servicio?.nombre ?? '—'}
+                                </span>
+                                {c.profesor && (
+                                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">
+                                    {c.profesor.nombre.split(' ')[0]}
+                                  </p>
+                                )}
+                              </div>
+                              <button onClick={() => handleDelete(c.id)} className="mt-0.5 text-muted-foreground hover:text-destructive shrink-0">
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </td>
                     )
                   })}
@@ -127,33 +159,65 @@ export default function HorariosAdmin() {
         <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>Agregar horario</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
+
             <div className="space-y-2">
               <Label>Clase</Label>
-              <Select value={form.servicio_id} onValueChange={(v) => setForm((prev) => ({ ...prev, servicio_id: v ?? '' }))}>
+              <Select value={form.servicio_id} onValueChange={(v) => setForm((p) => ({ ...p, servicio_id: v }))}>
                 <SelectTrigger>
                   <span className={form.servicio_id ? 'text-foreground' : 'text-muted-foreground'}>
                     {servicios.find(s => s.id === form.servicio_id)?.nombre ?? 'Selecciona una clase'}
                   </span>
                 </SelectTrigger>
                 <SelectContent>
-                  {servicios.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>
-                  ))}
+                  {servicios.map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
-              <Label>Día de la semana</Label>
-              <Select value={form.dia_semana} onValueChange={(v) => setForm((prev) => ({ ...prev, dia_semana: v ?? '1' }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{DIAS_SEMANA.map((d, i) => <SelectItem key={d} value={String(i + 1)}>{d}</SelectItem>)}</SelectContent>
+              <Label>Profesor <span className="text-muted-foreground font-normal">(opcional)</span></Label>
+              <Select value={form.profesor_id} onValueChange={(v) => setForm((p) => ({ ...p, profesor_id: v === 'none' ? '' : v }))}>
+                <SelectTrigger>
+                  <span className={form.profesor_id ? 'text-foreground' : 'text-muted-foreground'}>
+                    {form.profesor_id
+                      ? profesores.find(p => p.id === form.profesor_id)?.nombre ?? 'Sin asignar'
+                      : 'Sin asignar'}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin asignar</SelectItem>
+                  {profesores.map((p) => <SelectItem key={p.id} value={p.id}>{p.nombre}</SelectItem>)}
+                </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2"><Label>Hora inicio</Label><Input type="time" value={form.hora_inicio} onChange={(e) => setForm({ ...form, hora_inicio: e.target.value })} /></div>
-              <div className="space-y-2"><Label>Hora fin</Label><Input type="time" value={form.hora_fin} onChange={(e) => setForm({ ...form, hora_fin: e.target.value })} /></div>
+
+            <div className="space-y-2">
+              <Label>Día de la semana</Label>
+              <Select value={form.dia_semana} onValueChange={(v) => setForm((p) => ({ ...p, dia_semana: v }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DIAS_SEMANA.map((d, i) => <SelectItem key={d} value={String(i + 1)}>{d}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-            <div className="space-y-2"><Label>Salón (opcional)</Label><Input value={form.salon} onChange={(e) => setForm({ ...form, salon: e.target.value })} placeholder="Ej: Salón A" /></div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Hora inicio</Label>
+                <Input type="time" value={form.hora_inicio} onChange={(e) => setForm((p) => ({ ...p, hora_inicio: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Hora fin</Label>
+                <Input type="time" value={form.hora_fin} onChange={(e) => setForm((p) => ({ ...p, hora_fin: e.target.value }))} />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Salón <span className="text-muted-foreground font-normal">(opcional)</span></Label>
+              <Input value={form.salon} onChange={(e) => setForm((p) => ({ ...p, salon: e.target.value }))} placeholder="Ej: Salón A" />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>

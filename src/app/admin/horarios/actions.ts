@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 
 export async function crearHorario(payload: {
   servicio_id: string
+  profesor_id: string | null
   dia_semana: number
   hora_inicio: string
   hora_fin: string

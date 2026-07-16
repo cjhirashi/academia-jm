@@ -12,11 +12,13 @@ export type Servicio = {
 export type Horario = {
   id: string
   servicio_id: string | null
+  profesor_id: string | null
   dia_semana: number // 1=Lunes…7=Domingo
   hora_inicio: string // "HH:MM:SS"
   hora_fin: string
   salon: string | null
   servicio?: Servicio
+  profesor?: Profesor
 }
 
 export type Profesor = {
