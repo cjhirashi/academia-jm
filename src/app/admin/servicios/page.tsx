@@ -162,6 +162,13 @@ export default function ServiciosAdmin() {
     toast.success('Foto eliminada')
   }
 
+  const handleDeleteAllGaleria = async () => {
+    if (!confirm(`¿Eliminar las ${servicioGaleria.length} fotos de esta galería?`)) return
+    await Promise.all(servicioGaleria.map((img) => eliminarGaleriaItem(img.id)))
+    setServicioGaleria([])
+    toast.success('Galería eliminada')
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -349,11 +356,21 @@ export default function ServiciosAdmin() {
                     <Upload className="h-4 w-4 text-[var(--gold)]" />
                     <h3 className="font-bold text-sm uppercase tracking-wider">Galería de la clase</h3>
                   </div>
-                  <label className="inline-flex items-center gap-2 cursor-pointer rounded-lg border border-border/60 px-3 py-1.5 text-sm hover:bg-muted transition-colors">
-                    {uploadingGaleria ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                    {uploadingGaleria ? 'Subiendo...' : 'Subir fotos'}
-                    <input type="file" accept="image/*" multiple className="hidden" onChange={handleGaleriaUpload} disabled={uploadingGaleria} />
-                  </label>
+                  <div className="flex items-center gap-2">
+                    {servicioGaleria.length > 0 && (
+                      <button
+                        onClick={handleDeleteAllGaleria}
+                        className="inline-flex items-center gap-1.5 text-xs text-destructive hover:underline"
+                      >
+                        <Trash2 className="h-3 w-3" /> Eliminar todas
+                      </button>
+                    )}
+                    <label className="inline-flex items-center gap-2 cursor-pointer rounded-lg border border-border/60 px-3 py-1.5 text-sm hover:bg-muted transition-colors">
+                      {uploadingGaleria ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                      {uploadingGaleria ? 'Subiendo...' : 'Subir fotos'}
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={handleGaleriaUpload} disabled={uploadingGaleria} />
+                    </label>
+                  </div>
                 </div>
 
                 {servicioGaleria.length === 0 ? (
@@ -361,13 +378,14 @@ export default function ServiciosAdmin() {
                 ) : (
                   <div className="grid grid-cols-3 gap-2">
                     {servicioGaleria.map((img) => (
-                      <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden bg-muted">
+                      <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden bg-muted">
                         <Image src={img.url} alt={img.alt ?? ''} fill className="object-cover" />
                         <button
                           onClick={() => handleDeleteGaleriaItem(img)}
-                          className="absolute top-1 right-1 p-1 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-black/70 text-white hover:bg-destructive transition-colors"
+                          title="Eliminar foto"
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     ))}
