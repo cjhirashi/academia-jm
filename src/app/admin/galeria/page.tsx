@@ -7,6 +7,8 @@ import { Loader2, Trash2, Upload, ArrowUp, ArrowDown } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import type { GaleriaItem } from '@/lib/types'
+import { uploadToStorage } from '@/lib/storage'
+import { saveGaleriaPublica, eliminarGaleriaPublica, moverGaleriaPublica } from './actions'
 
 export default function GaleriaAdmin() {
   const [items, setItems] = useState<GaleriaItem[]>([])
@@ -27,16 +29,19 @@ export default function GaleriaAdmin() {
     const files = Array.from(e.target.files ?? [])
     if (!files.length) return
     setUploading(true)
+    let subidas = 0
     for (const file of files) {
-      const ext = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-      const { data, error } = await supabase.storage.from('galeria').upload(fileName, file, { cacheControl: '3600', upsert: false })
-      if (error) { toast.error(`Error subiendo ${file.name}`); continue }
-      const { data: { publicUrl } } = supabase.storage.from('galeria').getPublicUrl(data.path)
-      const maxOrden = items.length ? Math.max(...items.map((i) => i.orden)) : 0
-      await supabase.from('galeria').insert({ url: publicUrl, alt: file.name.replace(/\.[^.]+$/, ''), orden: maxOrden + 1 })
+      try {
+        const url = await uploadToStorage(file, 'galeria', '')
+        const maxOrden = items.length ? Math.max(...items.map((i) => i.orden)) : 0
+        const { error } = await saveGaleriaPublica(url, file.name.replace(/\.[^.]+$/, ''), maxOrden + subidas + 1)
+        if (error) { toast.error(`Error guardando ${file.name}`); continue }
+        subidas++
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : `Error: ${file.name}`)
+      }
     }
-    toast.success('Imágenes subidas')
+    if (subidas > 0) toast.success(`${subidas} imagen${subidas > 1 ? 'es' : ''} subida${subidas > 1 ? 's' : ''}`)
     setUploading(false)
     fetchItems()
     if (fileRef.current) fileRef.current.value = ''
@@ -44,35 +49,49 @@ export default function GaleriaAdmin() {
 
   const handleDelete = async (item: GaleriaItem) => {
     if (!confirm('¿Eliminar esta imagen?')) return
-    const path = item.url.split('/galeria/')[1]
-    if (path) await supabase.storage.from('galeria').remove([path])
-    await supabase.from('galeria').delete().eq('id', item.id)
-    toast.success('Imagen eliminada'); fetchItems()
+    const { error } = await eliminarGaleriaPublica(item.id)
+    if (error) { toast.error(error); return }
+    toast.success('Imagen eliminada')
+    setItems((prev) => prev.filter((i) => i.id !== item.id))
+  }
+
+  const handleDeleteAll = async () => {
+    if (!confirm(`¿Eliminar las ${items.length} imágenes de la galería?`)) return
+    await Promise.all(items.map((i) => eliminarGaleriaPublica(i.id)))
+    setItems([])
+    toast.success('Galería eliminada')
   }
 
   const moveItem = async (idx: number, dir: -1 | 1) => {
-    const newItems = [...items]
     const target = idx + dir
-    if (target < 0 || target >= newItems.length) return
-    const [a, b] = [newItems[idx], newItems[target]]
-    await Promise.all([
-      supabase.from('galeria').update({ orden: b.orden }).eq('id', a.id),
-      supabase.from('galeria').update({ orden: a.orden }).eq('id', b.id),
-    ])
-    fetchItems()
+    if (target < 0 || target >= items.length) return
+    const a = items[idx], b = items[target]
+    const newItems = [...items]
+    newItems[idx] = { ...a, orden: b.orden }
+    newItems[target] = { ...b, orden: a.orden }
+    newItems.sort((x, y) => x.orden - y.orden)
+    setItems(newItems)
+    await moverGaleriaPublica(a.id, a.orden, b.id, b.orden)
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-black">Galería</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sube y administra las fotos de la academia</p>
+          <p className="text-sm text-muted-foreground mt-1">Fotos del home — máx. 10 MB por imagen</p>
         </div>
-        <Button onClick={() => fileRef.current?.click()} disabled={uploading}>
-          {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
-          Subir fotos
-        </Button>
+        <div className="flex items-center gap-2">
+          {items.length > 0 && (
+            <Button variant="ghost" className="text-destructive hover:text-destructive gap-2" onClick={handleDeleteAll}>
+              <Trash2 className="h-4 w-4" /> Eliminar todas
+            </Button>
+          )}
+          <Button onClick={() => fileRef.current?.click()} disabled={uploading}>
+            {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+            Subir fotos
+          </Button>
+        </div>
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
       </div>
 
@@ -83,7 +102,7 @@ export default function GaleriaAdmin() {
       >
         <Upload className="h-8 w-8 mx-auto mb-3 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">Haz clic o arrastra imágenes aquí para subirlas</p>
-        <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP — máx. 5MB por imagen</p>
+        <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP — máx. 10 MB por imagen</p>
       </div>
 
       {loading ? (
@@ -93,20 +112,30 @@ export default function GaleriaAdmin() {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {items.map((item, idx) => (
-            <div key={item.id} className="group relative rounded-xl overflow-hidden border border-border/60 aspect-square bg-muted">
+            <div key={item.id} className="relative rounded-xl overflow-hidden border border-border/60 aspect-square bg-muted">
               <Image src={item.url} alt={item.alt ?? 'galería'} fill className="object-cover" />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+              {/* Botones siempre visibles — funcionan en móvil y desktop */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 flex items-center justify-between">
                 <div className="flex gap-1">
-                  <Button size="icon" variant="secondary" className="h-7 w-7" onClick={() => moveItem(idx, -1)} disabled={idx === 0}>
-                    <ArrowUp className="h-3 w-3" />
-                  </Button>
-                  <Button size="icon" variant="secondary" className="h-7 w-7" onClick={() => moveItem(idx, 1)} disabled={idx === items.length - 1}>
-                    <ArrowDown className="h-3 w-3" />
-                  </Button>
+                  <button
+                    className="w-7 h-7 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-white disabled:opacity-30 transition-colors"
+                    onClick={() => moveItem(idx, -1)} disabled={idx === 0} title="Mover arriba"
+                  >
+                    <ArrowUp className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    className="w-7 h-7 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-white disabled:opacity-30 transition-colors"
+                    onClick={() => moveItem(idx, 1)} disabled={idx === items.length - 1} title="Mover abajo"
+                  >
+                    <ArrowDown className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-                <Button size="icon" variant="destructive" className="h-7 w-7" onClick={() => handleDelete(item)}>
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+                <button
+                  className="w-7 h-7 flex items-center justify-center rounded-full bg-red-500/80 hover:bg-red-500 text-white transition-colors"
+                  onClick={() => handleDelete(item)} title="Eliminar"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
               </div>
             </div>
           ))}
